@@ -1,6 +1,6 @@
 {
-  "name": "Luthier — Dictionnaire d'accords de guitare",
-  "short_name": "Luthier",
+  "name": "Grat'Tab — Dictionnaire d'accords de guitare",
+  "short_name": "Grat'Tab",
   "description": "Tous les accords de guitare : positions ouvertes, barrés, capo, reconnaissance à l'écoute et grille de morceaux.",
   "lang": "fr",
   "start_url": "./index.html",

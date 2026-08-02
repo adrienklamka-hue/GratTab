@@ -1,5 +1,5 @@
-/* Luthier — service worker : l'appli fonctionne entièrement hors-ligne */
-const CACHE = 'luthier-v3';
+/* Grat'Tab — service worker : l'appli fonctionne entièrement hors-ligne */
+const CACHE = 'grattab-v4';
 const FICHIERS = [
   './',
   './index.html',

@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Luthier — Dictionnaire d'accords de guitare</title>
+<title>Grat'Tab — Dictionnaire d'accords de guitare</title>
 <meta name="description" content="Tous les accords de guitare : positions ouvertes, barrés, capo, avec écoute des notes. Classique, électro-acoustique, électrique.">
 <meta name="theme-color" content="#191008">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Luthier">
+<meta name="apple-mobile-web-app-title" content="Grat'Tab">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
@@ -143,7 +143,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
   <div class="marque">
     <div class="rosace" aria-hidden="true"></div>
     <div>
-      <h1>Luthier</h1>
+      <h1>Grat&rsquo;Tab</h1>
       <small>Dictionnaire d'accords · guitare</small>
     </div>
   </div>
@@ -256,7 +256,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
   <div class="timeline" id="timeline"></div>
 </section>
 
-<footer>Luthier — accords ouverts, barrés &amp; capo · sons générés dans le navigateur (aucune connexion requise).</footer>
+<footer>Grat’Tab — accords ouverts, barrés &amp; capo · sons générés dans le navigateur (aucune connexion requise).</footer>
 </div>
 <script>
 /* ================================================================
@@ -347,8 +347,8 @@ const PROGS=[
 ================================================================ */
 let etat={root:0,type:'maj',pos:0,capo:0,gaucher:false,fr:true,instrument:'folk',tempo:80};
 let favoris=[];
-try{favoris=JSON.parse(localStorage.getItem('luthier-favs')||'[]')}catch(e){}
-function sauveFavs(){try{localStorage.setItem('luthier-favs',JSON.stringify(favoris))}catch(e){}}
+try{favoris=JSON.parse(localStorage.getItem('grattab-favs')||localStorage.getItem('luthier-favs')||'[]')}catch(e){}
+function sauveFavs(){try{localStorage.setItem('grattab-favs',JSON.stringify(favoris))}catch(e){}}
 
 const nomNote=i=>(etat.fr?NOTES_FR:NOTES_INT)[((i%12)+12)%12];
 const typeDef=k=>TYPES.find(t=>t[0]===k);
@@ -485,8 +485,93 @@ function rendProgs(){
   </div>`).join('');
 }
 function rendAccordeur(){
-  $('zoneAccordeur').innerHTML='<b style="margin-right:6px">Cordes à vide :</b>'+MIDI_CORDES.map((m,s)=>`<button class="btn" data-corde="${s}">${['6ᵉ','5ᵉ','4ᵉ','3ᵉ','2ᵉ','1ʳᵉ'][s]} · ${nomNote(m)}</button>`).join('');
+  if(accArret){accArret();accArret=null;}
+  let ticks='';
+  for(let cts=-50;cts<=50;cts+=10){
+    const d=(cts*0.9)*Math.PI/180, maj=(cts===0||Math.abs(cts)===50);
+    const r1=maj?104:112, r2=126;
+    ticks+=`<line x1="${150+r1*Math.sin(d)}" y1="${150-r1*Math.cos(d)}" x2="${150+r2*Math.sin(d)}" y2="${150-r2*Math.cos(d)}" stroke="${cts===0?'#e8b563':'#5a3f26'}" stroke-width="${maj?3:2}"/>`;
+  }
+  $('zoneAccordeur').innerHTML=`
+  <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px">
+    <svg viewBox="0 0 300 168" style="width:100%;max-width:340px" aria-label="Accordeur à aiguille">
+      <path id="zoneVerte" d="" fill="none" stroke="#8fae6f" stroke-width="10" opacity="0.85"/>
+      ${ticks}
+      <text x="60" y="88" fill="#a5896a" font-size="12" text-anchor="middle">-50</text>
+      <text x="150" y="20" fill="#e8b563" font-size="12" text-anchor="middle">0</text>
+      <text x="240" y="88" fill="#a5896a" font-size="12" text-anchor="middle">+50</text>
+      <line id="aiguille" x1="150" y1="150" x2="150" y2="36" stroke="#f2e7d5" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="150" cy="150" r="9" fill="#c9924b"/>
+      <text x="18" y="162" fill="#a5896a" font-size="11">grave ♭</text>
+      <text x="282" y="162" fill="#a5896a" font-size="11" text-anchor="end">aigu ♯</text>
+    </svg>
+    <div class="display" id="noteJauge" style="font-size:2.1rem;font-weight:700;line-height:1">—</div>
+    <div class="vide" id="centsJauge">Lance le micro, joue une corde à vide, amène l'aiguille au centre.</div>
+    <div class="lecture" style="margin-top:2px">
+      <button class="btn principal" id="btnAccMicro">🎙️ Accorder au micro</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:4px">
+      <span class="vide">Sons de référence :</span>
+      ${MIDI_CORDES.map((m,s)=>`<button class="btn" data-corde="${s}">${['6ᵉ','5ᵉ','4ᵉ','3ᵉ','2ᵉ','1ʳᵉ'][s]} · ${nomNote(m)}</button>`).join('')}
+    </div>
+  </div>`;
+  const zv=document.getElementById('zoneVerte');
+  const a1=-4.5*Math.PI/180,a2=4.5*Math.PI/180,R=121;
+  zv.setAttribute('d',`M ${150+R*Math.sin(a1)} ${150-R*Math.cos(a1)} A ${R} ${R} 0 0 1 ${150+R*Math.sin(a2)} ${150-R*Math.cos(a2)}`);
+  document.getElementById('btnAccMicro').onclick=basculeAccordeurMicro;
 }
+
+/* ---------- accordeur : détection de hauteur (autocorrélation) ---------- */
+let accArret=null,accAiguille=0;
+function detecteHauteur(buf,sr){
+  const N=buf.length;
+  let rms=0;for(let i=0;i<N;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/N);
+  if(rms<0.008)return -1;
+  const min=Math.floor(sr/1000),max=Math.min(N-2,Math.floor(sr/60));
+  let best=0,bestOf=-1;
+  for(let of=min;of<=max;of++){
+    let s=0;for(let i=0;i<N-of;i++)s+=buf[i]*buf[i+of];
+    if(s>best){best=s;bestOf=of;}
+  }
+  if(bestOf<0)return -1;
+  let s0=0,s1=0,s2=0;
+  for(let i=0;i<N-bestOf-1;i++){s1+=buf[i]*buf[i+bestOf];s0+=buf[i]*buf[i+bestOf-1];s2+=buf[i]*buf[i+bestOf+1];}
+  const den=s0-2*s1+s2;
+  const dec=den?0.5*(s0-s2)/den:0;
+  return sr/(bestOf+(Math.abs(dec)<1?dec:0));
+}
+function basculeAccordeurMicro(){
+  const btn=document.getElementById('btnAccMicro');
+  if(accArret){accArret();accArret=null;btn.textContent='🎙️ Accorder au micro';btn.classList.add('principal');
+    document.getElementById('centsJauge').textContent='Micro arrêté.';return;}
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}).then(flux=>{
+    const c=audio(),src=c.createMediaStreamSource(flux);
+    const an=c.createAnalyser();an.fftSize=4096;src.connect(an);
+    const buf=new Float32Array(an.fftSize);
+    btn.textContent='■ Arrêter';btn.classList.remove('principal');
+    const aig=document.getElementById('aiguille'),nj=document.getElementById('noteJauge'),cj=document.getElementById('centsJauge');
+    const timer=setInterval(()=>{
+      an.getFloatTimeDomainData(buf);
+      const f=detecteHauteur(buf,c.sampleRate);
+      let cible=0;
+      if(f>0){
+        const midi=69+12*Math.log2(f/440),prox=Math.round(midi),cents=(midi-prox)*100;
+        cible=Math.max(-50,Math.min(50,cents));
+        const juste=Math.abs(cents)<=5;
+        nj.textContent=nomNote(((prox%12)+12)%12)+(Math.floor(prox/12)-1);
+        nj.style.color=juste?'#8fae6f':'#f2e7d5';
+        let corde='',dMin=99,sMin=-1;
+        MIDI_CORDES.forEach((m,s)=>{const d2=Math.abs(m-prox);if(d2<dMin){dMin=d2;sMin=s;}});
+        if(dMin<=2)corde=' · corde '+['6ᵉ (Mi grave)','5ᵉ (La)','4ᵉ (Ré)','3ᵉ (Sol)','2ᵉ (Si)','1ʳᵉ (Mi aigu)'][sMin];
+        cj.textContent=(cents>0?'+':'')+cents.toFixed(0)+' cents'+(juste?' — juste ✓':'')+corde;
+      }else{nj.textContent='—';nj.style.color='#f2e7d5';cj.textContent='joue une corde…';cible=0;}
+      accAiguille+=(cible-accAiguille)*0.35;
+      aig.setAttribute('transform','rotate('+(accAiguille*0.9)+' 150 150)');
+    },90);
+    accArret=()=>{clearInterval(timer);flux.getTracks().forEach(t=>t.stop());};
+  }).catch(()=>{document.getElementById('centsJauge').textContent='Micro refusé : autorise-le dans le navigateur.';});
+}
+
 function rendFiche(){
   const liste=positions(etat.root,etat.type);
   if(etat.pos>=liste.length)etat.pos=0;
