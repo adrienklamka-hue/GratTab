@@ -26,22 +26,24 @@ body{
   background:var(--bg); color:var(--texte);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   line-height:1.5; min-height:100vh;
-  background-image:radial-gradient(circle at 12% 8%, rgba(255,201,75,.14) 0 90px, transparent 90px),radial-gradient(circle at 88% 4%, rgba(239,125,114,.16) 0 110px, transparent 110px),radial-gradient(ellipse 900px 500px at 50% -100px, #283472 0%, var(--bg) 70%);
+  background-image:radial-gradient(circle at 10% -4%, rgba(255,201,75,.09) 0 70px, transparent 70px),radial-gradient(circle at 92% -6%, rgba(239,125,114,.10) 0 80px, transparent 80px),radial-gradient(ellipse 900px 500px at 50% -100px, #283472 0%, var(--bg) 70%);
 }
 h1,h2,h3,.display{font-family:"Fraunces",Georgia,serif}
-.wrap{max-width:1100px;margin:0 auto;padding:16px 14px 60px}
+.wrap{max-width:1100px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(44px + env(safe-area-inset-bottom))}
 
 /* ---------- entête ---------- */
-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:10px 0 18px}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:4px 0 10px}
 .marque{display:flex;align-items:center;gap:10px}
-.logo-tete{width:46px;height:70px;flex:none;transform:rotate(-6deg)}
-.etincelles{width:26px;height:54px;flex:none}
-.logo-texte h1{font-size:2.15rem;font-weight:900;line-height:.9;letter-spacing:.5px}
+.logo-tete{width:32px;height:48px;flex:none;transform:rotate(-6deg)}
+.etincelles{width:18px;height:38px;flex:none}
+.logo-texte h1{font-size:1.55rem;font-weight:900;line-height:.9;letter-spacing:.4px}
 .grat{color:var(--ivoire);display:inline-block;transform:rotate(-2.5deg)}
 .tab{color:var(--laiton);display:inline-block;transform:rotate(2deg) translateY(3px);margin-left:2px}
-.ruban{display:inline-block;margin-top:7px;background:var(--laiton);color:#1d2447;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 12px;border-radius:4px;transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.ruban{display:inline-block;margin-top:4px;background:var(--laiton);color:#1d2447;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:4px;transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
 .ruban b{font-weight:800}
-.outils{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.outils{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.outils .btn{padding:6px 10px;font-size:.85rem}
+.outils select{padding:6px 8px;font-size:.88rem}
 select,button,input[type=text]{font:inherit;color:var(--texte)}
 select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:8px 10px}
 .btn{background:var(--panel2);border:2px solid var(--ligne);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s;font-weight:600}
@@ -93,7 +95,8 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .astuce{color:var(--texte2);font-size:.8rem;text-align:center}
 
 /* capo */
-.capo{display:flex;align-items:center;gap:12px;margin-top:16px;background:var(--panel2);border-radius:10px;padding:10px 14px}
+.capo{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px;background:var(--panel2);border-radius:12px;padding:10px 12px}
+.capo input[type=range]{flex:1 1 130px}
 .capo input[type=range]{flex:1;accent-color:var(--laiton)}
 .capo b{min-width:70px;text-align:center}
 .bandeau-capo{margin-top:8px;background:linear-gradient(90deg,#3a4787,#313b6e);border:1px solid var(--laiton);border-radius:10px;padding:8px 14px;font-size:.9rem}
@@ -130,7 +133,7 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .capobar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;background:var(--panel2);padding:10px 12px;border-radius:10px;font-size:.9rem}
 .capobar label{display:flex;gap:6px;align-items:center;color:var(--texte2)}
 .btn.principal{background:var(--laiton);color:#1d2447;border-color:var(--laiton);font-weight:600}
-.yt-sticky{position:sticky;top:6px;z-index:40;background:var(--bg);padding:4px 0 6px;border-radius:14px}
+.yt-sticky{position:sticky;top:calc(4px + env(safe-area-inset-top));z-index:40;background:var(--bg);padding:4px 0 6px;border-radius:14px}
 .yt-cadre{margin-top:8px}
 .live{display:flex;align-items:center;justify-content:center;gap:16px;background:var(--panel2);border:2px solid var(--laiton);border-radius:18px;padding:10px 14px;margin-top:8px;box-shadow:4px 4px 0 rgba(0,0,0,.25)}
 .live-nom{font-size:2.8rem;font-weight:900;line-height:1;color:var(--laiton-vif);text-shadow:2px 2px 0 rgba(0,0,0,.3)}
@@ -152,12 +155,37 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .jam-fin{text-align:center;padding:14px;background:var(--panel2);border:2px solid var(--laiton);border-radius:18px;margin-top:10px}
 .jam-fin .etoiles{font-size:2.2rem;letter-spacing:.15em}
 .jam-fin .gros{font-size:2.4rem;font-weight:900;color:var(--laiton-vif)}
+.sauve{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.morceau{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px;border:2px solid var(--ligne);border-radius:12px;margin-bottom:8px;background:var(--panel2)}
+.morceau .titre{font-weight:800;flex:1 1 140px}
+.morceau small{display:block;color:var(--texte2);font-weight:400}
 .yt-cadre iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
 .fichier{color:var(--texte2);font-size:.9rem;margin-top:8px}
 input[type=file]{color:var(--texte2)}
 input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#1d2447;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
 
 footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
+/* ---------- v8 : harmonisation mobile ---------- */
+.progs{margin-top:14px}
+@media(max-width:600px){
+  .carte{padding:12px;border-radius:16px;box-shadow:3px 4px 0 rgba(0,0,0,.2)}
+  .carte h2{font-size:1.02rem}
+  .grille{gap:12px}
+  .nom-accord{font-size:2.1rem}
+  .live-nom{font-size:2.2rem}
+  .jam-nom{font-size:2.6rem}
+  .btn{padding:7px 11px;font-size:.9rem}
+  .lecture .btn{padding:9px 13px}
+  .notes12{gap:5px}
+  .types{gap:5px}
+  .capo .btn{flex:1 1 100%;text-align:center}
+  .capo b{min-width:0}
+  .prog .nom{min-width:0}
+  .prog{padding:9px}
+  .diagramme{max-width:290px}
+  .live-diag{width:104px}
+  .compo{gap:6px}
+}
 </style>
 </head>
 <body>
@@ -295,7 +323,17 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
     <label><input type="checkbox" id="simplif"> Accords simplifiés</label>
     <span class="vide" id="capoInfo"></span>
   </div>
+  <div class="sauve" id="zoneSauve" hidden>
+    <input class="recherche" id="nomMorceau" type="text" placeholder="Nom de la chanson…" style="flex:1;min-width:170px;margin:0">
+    <button class="btn principal" id="btnSauveMorceau">💾 Enregistrer</button>
+  </div>
   <div class="timeline" id="timeline"></div>
+</section>
+
+<!-- ======= v8 : mes morceaux ======= -->
+<section class="carte progs">
+  <h2>Mes morceaux <span>grilles enregistrées</span></h2>
+  <div id="listeMorceaux"></div>
 </section>
 
 <!-- ======= v7 : Chord Hero ======= -->
@@ -661,7 +699,7 @@ function rendFiche(){
   rendNotes();rendTypes();rendFavs();
   etat._pos=pos;
 }
-function toutRendre(){rendFiche();rendProgs();rendAccordeur();}
+function toutRendre(){rendFiche();rendProgs();rendAccordeur();rendMorceaux();}
 
 /* ---------- événements ---------- */
 document.addEventListener('click',e=>{
@@ -674,6 +712,9 @@ document.addEventListener('click',e=>{
   else if(b.dataset.s!==undefined){const s=+b.dataset.s;if(etat._pos&&etat._pos.f[s]>=0)pince(s,etat._pos.f[s],audio().currentTime+0.02);}
   else if(b.dataset.play!==undefined){joueProg(+b.dataset.play);}
   else if(b.dataset.jam!==undefined){lanceJam(PROGS[+b.dataset.jam].seq.map(a=>({r:a[0],type:a[1]})));document.getElementById('secJam').scrollIntoView({behavior:'smooth'});}
+  else if(b.dataset.mc!==undefined){chargeMorceau(+b.dataset.mc);}
+  else if(b.dataset.mjam!==undefined){const mo=morceaux[+b.dataset.mjam];if(mo){lanceJam(mo.grille.map(s=>({r:s.r,type:s.type})));document.getElementById('secJam').scrollIntoView({behavior:'smooth'});}}
+  else if(b.dataset.msup!==undefined){if(confirm('Supprimer ce morceau ?')){morceaux.splice(+b.dataset.msup,1);sauveMorceaux();rendMorceaux();}}
   else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}
 });
 $('jouerBas').onclick=()=>etat._pos&&joueAccord(etat._pos,'bas');
@@ -818,6 +859,8 @@ let ytArret=null,ytSegs=[],ytEnCours=null,ytDernierT=0;
 $('btnYt').onclick=()=>{
   const m=($('urlYt').value||'').match(/(?:youtube\.com\/(?:watch\?[^\s]*v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/);
   if(!m){$('etatYt').textContent='Colle un lien YouTube valide (watch, youtu.be, shorts…).';return;}
+  videoYtId=m[1];ytTitre='';
+  fetch('https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D'+m[1]+'&format=json').then(r=>r.json()).then(d=>{ytTitre=d.title||'';if(!$('nomMorceau').value)$('nomMorceau').value=ytTitre;}).catch(()=>{});
   $('cadreYt').innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" title="Vidéo YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
   $('capYt').hidden=false;
   $('etatYt').textContent='Lance la vidéo, puis choisis une méthode de capture ci-dessous.';
@@ -964,6 +1007,8 @@ function rendGrille(){
     const ouverts=grille.filter(s=>OUVERTS[(((s.r-grilleCapo)%12+12)%12)+'|'+(simp2?(SIMPLIF[s.type]||s.type):s.type)]).length;
     $('capoInfo').textContent='Capo '+grilleCapo+' : formes jouées affichées ('+Math.round(100*ouverts/grille.length)+'% en position ouverte). L\'accord réel sonne '+grilleCapo+' demi-ton'+(grilleCapo>1?'s':'')+' plus haut.';
   }else $('capoInfo').textContent='';
+  $('zoneSauve').hidden=!grille.length;
+  if(grille.length&&!$('nomMorceau').value&&ytTitre)$('nomMorceau').value=ytTitre;
 }
 $('capoGrille').onchange=e=>{grilleCapo=+e.target.value;rendGrille();};
 $('simplif').onchange=rendGrille;
@@ -1119,6 +1164,49 @@ const _lanceJam=lanceJam;
 lanceJam=function(seq){dernierJamSeq=(seq||[]).slice();_lanceJam(seq);};
 $('btnJamGrille').onclick=()=>lanceJam(grille.map(s=>({r:s.r,type:s.type})));
 $('btnJamStop').onclick=arreteJam;
+
+/* ================================================================
+   V8 — MES MORCEAUX : grilles Live enregistrées avec nom de chanson
+================================================================ */
+let morceaux=[],videoYtId='',ytTitre='';
+try{morceaux=JSON.parse(localStorage.getItem('grattab-morceaux')||'[]')}catch(e){}
+function sauveMorceaux(){try{localStorage.setItem('grattab-morceaux',JSON.stringify(morceaux))}catch(e){}}
+function rendMorceaux(){
+  const z=$('listeMorceaux');
+  if(!morceaux.length){z.innerHTML='<span class="vide">Aucun morceau enregistré — capte une grille en Mode Live YouTube puis appuie sur 💾.</span>';return;}
+  z.innerHTML=morceaux.map((m,i)=>`<div class="morceau">
+    <div class="titre">🎵 ${m.nom.replace(/</g,'&lt;')}<small>${new Date(m.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${m.grille.length} accords</small></div>
+    <button class="btn principal" data-mc="${i}">▶ Charger</button>
+    <button class="btn" data-mjam="${i}">🎮 Jam</button>
+    <button class="btn" data-msup="${i}" title="Supprimer">🗑</button>
+  </div>`).join('');
+}
+function chargeMorceau(i){
+  const m=morceaux[i];if(!m)return;
+  grille=m.grille.map(s=>({r:s.r,type:s.type,t0:s.t0,t1:s.t1}));
+  grilleSource='yt';grilleCapo=0;
+  $('capoGrille').value='0';$('capobar').hidden=false;$('lecteurAudio').hidden=true;
+  $('nomMorceau').value=m.nom;
+  if(m.videoId){
+    videoYtId=m.videoId;ytTitre=m.nom;
+    $('urlYt').value='https://www.youtube.com/watch?v='+m.videoId;
+    $('cadreYt').innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${m.videoId}?rel=0" title="Vidéo YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    $('capYt').hidden=false;
+  }
+  rendGrille();
+  $('etatAnalyse').textContent='« '+m.nom+' » chargé ('+grille.length+' accords). Meilleur capo, Jam et fiche accord sont branchés dessus.';
+  document.getElementById('etatAnalyse').scrollIntoView({behavior:'smooth',block:'center'});
+}
+$('btnSauveMorceau').onclick=()=>{
+  if(!grille.length)return;
+  const nom=($('nomMorceau').value||'').trim()||('Morceau du '+new Date().toLocaleDateString('fr-FR'));
+  const existant=morceaux.findIndex(m=>m.nom===nom);
+  const entree={nom,date:Date.now(),videoId:grilleSource==='yt'?videoYtId:'',grille:grille.map(s=>({r:s.r,type:s.type,t0:Math.round(s.t0*10)/10,t1:Math.round(s.t1*10)/10}))};
+  if(existant>=0)morceaux[existant]=entree;else morceaux.unshift(entree);
+  morceaux=morceaux.slice(0,30);
+  sauveMorceaux();rendMorceaux();
+  $('etatAnalyse').textContent='💾 « '+nom+' » enregistré dans Mes morceaux.';
+};
 
 toutRendre();</script>
 <script>
