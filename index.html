@@ -130,7 +130,13 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .capobar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;background:var(--panel2);padding:10px 12px;border-radius:10px;font-size:.9rem}
 .capobar label{display:flex;gap:6px;align-items:center;color:var(--texte2)}
 .btn.principal{background:var(--laiton);color:#1d2447;border-color:var(--laiton);font-weight:600}
+.yt-sticky{position:sticky;top:6px;z-index:40;background:var(--bg);padding:4px 0 6px;border-radius:14px}
 .yt-cadre{margin-top:8px}
+.live{display:flex;align-items:center;justify-content:center;gap:16px;background:var(--panel2);border:2px solid var(--laiton);border-radius:18px;padding:10px 14px;margin-top:8px;box-shadow:4px 4px 0 rgba(0,0,0,.25)}
+.live-nom{font-size:2.8rem;font-weight:900;line-height:1;color:var(--laiton-vif);text-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.live-txt{display:flex;flex-direction:column;gap:4px;align-items:center}
+.live-diag{width:128px;flex:none}
+.live-diag svg{width:100%;display:block}
 .yt-cadre iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
 .fichier{color:var(--texte2);font-size:.9rem;margin-top:8px}
 input[type=file]{color:var(--texte2)}
@@ -236,16 +242,25 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 <!-- ======= v3 : vidéo YouTube ======= -->
 <section class="carte progs">
   <h2>Vidéo YouTube <span>colle un lien</span></h2>
-  <p class="vide">Colle le lien d'une vidéo : elle s'ouvre ici, puis l'appli l'écoute pendant la lecture et en extrait la grille d'accords en direct. Sur ordinateur (Chrome ou Edge), « Son de l'onglet » capture l'audio proprement, sans micro. Sur téléphone, lance la vidéo avec le son sur les enceintes et choisis le micro.</p>
+  <p class="vide">Colle le lien d'une vidéo : elle s'ouvre ici, dans l'appli. Lance-la (son à fond, sans écouteurs), appuie sur <b>Mode Live</b> : l'accord à jouer s'affiche en grand avec son diagramme, en temps réel, et reste à l'écran avec la vidéo pendant que la grille se construit en dessous. Sur ordinateur, « Son de l'onglet » capture l'audio sans micro.</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
     <input class="recherche" id="urlYt" type="text" placeholder="https://www.youtube.com/watch?v=…" style="flex:1;min-width:220px;margin:0">
     <button class="btn principal" id="btnYt">Charger</button>
   </div>
-  <div class="yt-cadre" id="cadreYt"></div>
+  <div class="yt-sticky">
+    <div class="yt-cadre" id="cadreYt"></div>
+    <div class="live" id="livePanel" hidden>
+      <div class="live-txt">
+        <div class="live-nom display" id="liveNom">—</div>
+        <div class="vide" id="liveInfo">j'écoute…</div>
+      </div>
+      <div class="live-diag" id="liveDiag"></div>
+    </div>
+  </div>
   <div class="vide" id="etatYt" style="margin-top:8px"></div>
   <div class="lecture" id="capYt" hidden style="justify-content:flex-start;margin-top:10px">
-    <button class="btn principal" id="btnYtOnglet">🖥️ Analyser le son de l'onglet</button>
-    <button class="btn" id="btnYtMicro">🎙️ Analyser par le micro</button>
+    <button class="btn principal" id="btnYtMicro">🎸 Mode Live (micro)</button>
+    <button class="btn" id="btnYtOnglet">🖥️ Son de l'onglet (ordinateur)</button>
     <button class="btn" id="btnYtStop" hidden>■ Terminer et garder la grille</button>
   </div>
 </section>
@@ -768,15 +783,31 @@ $('btnYt').onclick=()=>{
 function finSegYt(t){
   if(ytEnCours){ytEnCours.t1=t;if(ytEnCours.t1-ytEnCours.t0>=0.5)ytSegs.push(ytEnCours);ytEnCours=null;}
 }
+let verrouEcran=null;
+async function gardeEcran(actif){
+  try{
+    if(actif&&'wakeLock' in navigator)verrouEcran=await navigator.wakeLock.request('screen');
+    else if(verrouEcran){verrouEcran.release();verrouEcran=null;}
+  }catch(e){}
+}
+function majLive(b){
+  const lp=$('livePanel');lp.hidden=false;
+  if(!b){$('liveInfo').textContent='j\'écoute… lance la musique !';return;}
+  $('liveNom').textContent=nomAccord(b.r,b.t);
+  $('liveInfo').textContent='joue-le maintenant !';
+  const p=positions(b.r,b.t)[0];
+  $('liveDiag').innerHTML=p?dessine(p).replace(/class="corde"/g,'class="cordeL"'):'';
+}
 function demarreYt(flux,mode){
   ytSegs=[];ytEnCours=null;ytDernierT=0;
   $('btnYtStop').hidden=false;$('btnYtMicro').hidden=true;$('btnYtOnglet').hidden=true;
-  $('etatYt').textContent='Capture en cours ('+mode+') — la grille se construit en direct dans la section en dessous…';
+  $('etatYt').textContent='Capture en cours ('+mode+') — l\'accord à jouer s\'affiche au-dessus, la grille se construit en dessous.';
   $('capobar').hidden=false;$('lecteurAudio').hidden=true;grilleSource='yt';grilleCapo=0;$('capoGrille').value='0';
+  majLive(null);gardeEcran(true);
   ytArret=demarreDetecteur(flux,(b,score,t)=>{
     ytDernierT=t;
-    if(!b){finSegYt(t);grille=ytSegs.slice();rendGrille();return;}
-    if(!ytEnCours||ytEnCours.r!==b.r||ytEnCours.type!==b.t){finSegYt(t);ytEnCours={r:b.r,type:b.t,t0:t,t1:t};}
+    if(!b){finSegYt(t);grille=ytSegs.slice();rendGrille();majLive(null);return;}
+    if(!ytEnCours||ytEnCours.r!==b.r||ytEnCours.type!==b.t){finSegYt(t);ytEnCours={r:b.r,type:b.t,t0:t,t1:t};majLive(b);}
     else ytEnCours.t1=t;
     grille=ytSegs.concat([Object.assign({},ytEnCours)]);
     rendGrille();
@@ -798,7 +829,8 @@ $('btnYtOnglet').onclick=async()=>{
   }catch(e){$('etatYt').textContent='Capture non disponible ici (fonctionne sur Chrome ou Edge, sur ordinateur) — utilise le micro.';}
 };
 $('btnYtStop').onclick=()=>{
-  if(ytArret)ytArret();ytArret=null;
+  if(ytArret)ytArret();ytArret=null;gardeEcran(false);
+  $('liveInfo').textContent='terminé — la grille est gardée en dessous';
   finSegYt(ytDernierT);
   $('btnYtStop').hidden=true;$('btnYtMicro').hidden=false;$('btnYtOnglet').hidden=false;
   grille=ytSegs.slice();grilleSource='yt';
