@@ -12,6 +12,7 @@ L'appli s'ouvre sur un **accueil à tuiles** : chaque module (accords, Live YouT
 - **Capodastre** 0–9 avec pédagogie de transposition, et **Capo malin** qui transforme un accord difficile en forme ouverte
 - **L'Oreille** : reconnaissance des accords au micro, en direct, avec historique
 - **Mes morceaux** : chaque grille captée en Live peut être enregistrée avec le nom de la chanson, pour la recharger ou la jouer en Jam plus tard
+- **Tempo & rythmiques** : 8 patterns de main droite animés et joués sur l'accord affiché, tempo détecté automatiquement sur la grille d'un morceau
 - **Coach de transitions** : chrono 30/60 s, l'appli compte à l'oreille tes changements entre deux accords, avec records et historique par paire
 - **Chord Hero (Jam noté)** : l'appli t'écoute jouer une grille et note ta précision — points, combos, record
 - **Mode Live YouTube** : la vidéo joue dans l'appli et l'accord à jouer s'affiche en direct, en grand, avec son diagramme

@@ -165,6 +165,19 @@ input[type=file]{color:var(--texte2)}
 input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#1d2447;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
 
 footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
+.version{text-align:center;margin:14px 0 2px;color:var(--texte2);font-size:.76rem;letter-spacing:.04em}
+.version b{color:var(--laiton-vif);font-weight:800}
+/* ---------- v11 : rythmiques ---------- */
+#rytGrille{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:12px 0}
+.coup{background:var(--panel2);border:2px solid var(--ligne);border-radius:12px;padding:10px 0 6px;text-align:center;transition:.1s}
+.coup span{display:block;font-size:1.35rem;font-weight:900;line-height:1}
+.coup small{color:var(--texte2);font-size:.68rem}
+.coup.bas span{color:var(--laiton)}
+.coup.haut span{color:var(--laiton-vif)}
+.coup.vide span{color:var(--ligne)}
+.coup.joue{background:var(--laiton);border-color:var(--laiton);transform:translateY(-3px);box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.coup.joue span,.coup.joue small{color:#1d2447}
+.ryt-legende{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;color:var(--texte2);font-size:.8rem}
 /* ---------- v10 : accueil + navigation ---------- */
 .accueil{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 4px}
 .tuile{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--panel);border:2px solid var(--ligne);border-radius:20px;padding:18px 10px 14px;cursor:pointer;box-shadow:4px 5px 0 rgba(0,0,0,.22);transition:.12s;color:var(--texte);font:inherit;text-align:center}
@@ -244,10 +257,12 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
   <button class="tuile" data-va="morceaux"><span class="emo">🎵</span><b>Mes morceaux</b><small>grilles, fichiers, meilleur capo</small></button>
   <button class="tuile" data-va="jam"><span class="emo">🎮</span><b>Chord Hero</b><small>le jam noté</small></button>
   <button class="tuile" data-va="coach"><span class="emo">⏱️</span><b>Coach transitions</b><small>1 minute chrono</small></button>
+  <button class="tuile" data-va="rythme"><span class="emo">🥁</span><b>Tempo &amp; rythmiques</b><small>la roue de la main droite</small></button>
   <button class="tuile" data-va="progs"><span class="emo">🪕</span><b>Enchaînements</b><small>progressions à écouter</small></button>
   <button class="tuile" data-va="oreille"><span class="emo">🎧</span><b>L'Oreille</b><small>reconnaissance à l'écoute</small></button>
   <button class="tuile" data-va="accordeur"><span class="emo">🎯</span><b>Accordeur</b><small>aiguille de précision</small></button>
 </div>
+<div class="version" id="versionApp">Grat’Tab <b>v11</b> · publiée le 2 août 2026 · par TchoPolo</div>
 
 <div class="grille" id="secAccords">
   <!-- ======= colonne choix ======= -->
@@ -413,6 +428,24 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
     <div class="jam-retour" id="coachDetecte"></div>
   </div>
   <div id="coachFin" hidden></div>
+</section>
+
+<!-- ======= v11 : tempo & rythmiques ======= -->
+<section class="carte progs" id="secRythme">
+  <h2>Tempo &amp; rythmiques <span>la main droite</span></h2>
+  <p class="vide">Les accords, c'est la main gauche. Ce qui fait qu'un morceau <b>sonne</b>, c'est la main droite. Choisis une rythmique, règle le tempo — ou laisse l'appli le détecter sur ta grille — et joue-la sur l'accord affiché dans le dictionnaire.</p>
+  <div class="lecture" style="justify-content:flex-start;margin:10px 0">
+    <button class="btn" id="btnRytDetect">🥁 Détecter le tempo de ma grille</button>
+  </div>
+  <div class="vide" id="rytDetect"></div>
+  <div class="types" id="rytListe" style="margin:12px 0"></div>
+  <div class="vide" id="rytInfo"></div>
+  <div id="rytGrille"></div>
+  <div class="ryt-legende"><span>▼ vers le bas</span><span>▲ vers le haut</span><span>● basse seule</span><span>· silence</span></div>
+  <div class="tempo" style="margin-top:12px">Tempo <input type="range" id="rytTempo" min="50" max="180" value="80"> <b id="rytBpmVal">80 bpm</b></div>
+  <div class="lecture" style="justify-content:flex-start">
+    <button class="btn principal" id="btnRyt">▶ Jouer la rythmique</button>
+  </div>
 </section>
 
 <footer>Grat’Tab — développé par TchoPolo 🧡 accords ouverts, barrés &amp; capo · sons générés dans le navigateur, aucune connexion requise.</footer>
@@ -760,7 +793,7 @@ function rendFiche(){
   rendNotes();rendTypes();rendFavs();
   etat._pos=pos;
 }
-function toutRendre(){rendFiche();rendProgs();rendAccordeur();rendMorceaux();rendCoach();}
+function toutRendre(){rendFiche();rendProgs();rendAccordeur();rendMorceaux();rendCoach();rendRythmes();}
 
 /* ---------- événements ---------- */
 document.addEventListener('click',e=>{
@@ -779,6 +812,7 @@ document.addEventListener('click',e=>{
   else if(b.dataset.msup!==undefined){if(confirm('Supprimer ce morceau ?')){morceaux.splice(+b.dataset.msup,1);sauveMorceaux();rendMorceaux();}}
   else if(b.dataset.cp!==undefined){const p=COACH_PAIRES[+b.dataset.cp];coachSel.ra=p[0];coachSel.ta=p[1];coachSel.rb=p[2];coachSel.tb=p[3];rendCoach();}
   else if(b.dataset.cd!==undefined){coachSel.duree=+b.dataset.cd;rendCoach();}
+  else if(b.dataset.ry!==undefined){const relance=!!rytArret;if(rytArret){rytArret();rytArret=null;$('btnRyt').textContent='▶ Jouer la rythmique';}rytSel=+b.dataset.ry;rendRythmes();if(relance)basculeRythme();}
   else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();va('accords');}
 });
 $('jouerBas').onclick=()=>etat._pos&&joueAccord(etat._pos,'bas');
@@ -1379,7 +1413,7 @@ $('btnCoachStop').onclick=()=>arreteCoach(true);
 /* ================================================================
    V10 — NAVIGATION : accueil à tuiles + barre du bas
 ================================================================ */
-const PAGES={accueil:[],accords:['secAccords'],accordeur:['zoneAccordeur'],progs:['secProgs'],oreille:['secOreille'],live:['secLive'],morceaux:['secGrille','secMorceaux'],jam:['secJam'],coach:['secCoach']};
+const PAGES={accueil:[],accords:['secAccords'],accordeur:['zoneAccordeur'],progs:['secProgs'],oreille:['secOreille'],live:['secLive'],morceaux:['secGrille','secMorceaux'],jam:['secJam'],coach:['secCoach'],rythme:['secRythme']};
 const TOUS_MODULES=[...new Set([].concat(...Object.values(PAGES)))];
 let pageCourante='accueil';
 function va(p){
@@ -1390,14 +1424,87 @@ function va(p){
     el.style.display=visible?'':'none';
     if(id==='zoneAccordeur')el.classList.toggle('ouvert',visible);
   });
-  const acc=document.getElementById('accueil');
+  const acc=document.getElementById('accueil'),ver=document.getElementById('versionApp');
   if(acc)acc.style.display=(p==='accueil')?'':'none';
+  if(ver)ver.style.display=(p==='accueil')?'':'none';
   document.querySelectorAll('.navbas button').forEach(b=>b.classList.toggle('actif',b.dataset.va===p));
   pageCourante=p;
   if(location.hash!=='#'+p)location.hash='#'+p;
   window.scrollTo({top:0});
 }
 window.addEventListener('hashchange',()=>{const p=location.hash.slice(1)||'accueil';if(p!==pageCourante)va(p);});
+
+/* ================================================================
+   V11 — TEMPO & RYTHMIQUES : BPM détecté + roue de patterns
+================================================================ */
+const RYTHMES=[
+ {nom:'Le basique',info:'4 coups vers le bas, un par temps. La rythmique de départ.',motif:['B','B','B','B','','','',''],diff:1},
+ {nom:'Bas-haut',info:'Croches régulières : un aller-retour par temps.',motif:['B','H','B','H','B','H','B','H'],diff:1},
+ {nom:'Le folk',info:'La rythmique passe-partout : bas, bas-haut, haut, bas-haut.',motif:['B','','B','H','','H','B','H'],diff:2},
+ {nom:'Pop-rock',info:'Bas, bas, bas-haut, bas-haut — ça pousse en avant.',motif:['B','','B','H','B','H','B','H'],diff:2},
+ {nom:'Ballade lente',info:'Deux coups longs et une reprise en fin de mesure.',motif:['B','','','H','B','','B','H'],diff:2},
+ {nom:'Reggae / skank',info:'Silence sur les temps, coups secs sur les contretemps.',motif:['','H','','H','','H','','H'],diff:3},
+ {nom:'Country boum-tchak',info:'Basse sur 1 et 3, accord sur 2 et 4.',motif:['b','','B','','b','','B',''],diff:2},
+ {nom:'Valse à 3 temps',info:'Basse puis deux accords — pour les 3/4.',motif:['b','B','B','','','','',''],diff:2,temps:3},
+];
+let rytSel=0,rytArret=null,rytPos=0,rytBpm=80;
+
+function rendRythmes(){
+  $('rytListe').innerHTML=RYTHMES.map((r,i)=>`<button class="btn ${i===rytSel?'actif':''}" data-ry="${i}">${r.nom} ${'●'.repeat(r.diff)}</button>`).join('');
+  const r=RYTHMES[rytSel];
+  const nb=(r.temps||4)*2;
+  $('rytInfo').textContent=r.info;
+  $('rytGrille').innerHTML=r.motif.slice(0,nb).map((m,i)=>{
+    const lbl=m==='B'?'▼':m==='H'?'▲':m==='b'?'●':'·';
+    const cls=m?'coup '+(m==='H'?'haut':'bas'):'coup vide';
+    return `<div class="${cls}" data-pas="${i}"><span>${lbl}</span><small>${i%2===0?(i/2+1):'&amp;'}</small></div>`;
+  }).join('');
+  $('rytBpmVal').textContent=rytBpm+' bpm';
+  $('rytTempo').value=rytBpm;
+}
+function jouePas(i){
+  const r=RYTHMES[rytSel],m=r.motif[i];
+  document.querySelectorAll('#rytGrille .coup').forEach((el,k)=>el.classList.toggle('joue',k===i));
+  if(!m)return;
+  const c=audio(),t=c.currentTime+0.01;
+  const pos=etat._pos;if(!pos)return;
+  let cordes=[0,1,2,3,4,5].filter(s=>pos.f[s]>=0);
+  if(m==='b')cordes=cordes.slice(0,2);              // basse : cordes graves
+  if(m==='H')cordes=cordes.slice(-4).reverse();     // remontée : cordes aiguës
+  const vol=m==='H'?0.55:m==='b'?0.85:0.8;
+  cordes.forEach((s,k)=>pince(s,pos.f[s],t+k*0.028,vol));
+}
+function basculeRythme(){
+  if(rytArret){rytArret();rytArret=null;$('btnRyt').textContent='▶ Jouer la rythmique';
+    document.querySelectorAll('#rytGrille .coup').forEach(el=>el.classList.remove('joue'));gardeEcran(false);return;}
+  const r=RYTHMES[rytSel],nb=(r.temps||4)*2;
+  rytPos=0;audio();gardeEcran(true);
+  $('btnRyt').textContent='■ Arrêter';
+  const id=setInterval(()=>{jouePas(rytPos%nb);rytPos++;},30000/rytBpm);
+  jouePas(0);rytPos=1;
+  rytArret=()=>clearInterval(id);
+}
+/* --- détection du tempo sur la grille captée --- */
+function detecteTempo(){
+  if(!grille||grille.length<4){$('rytDetect').textContent='Capte ou charge d\'abord une grille (Live YouTube ou fichier) pour détecter son tempo.';return;}
+  const durees=[];
+  for(const s of grille){const d=s.t1-s.t0;if(d>0.35&&d<12)durees.push(d);}
+  if(durees.length<3){$('rytDetect').textContent='Grille trop courte pour estimer le tempo.';return;}
+  durees.sort((a,b)=>a-b);
+  const med=durees[Math.floor(durees.length/2)];
+  // un accord tient le plus souvent 1, 2 ou 4 temps : on ramène dans 60-160 bpm
+  let bpm=240/med;
+  while(bpm<60)bpm*=2;
+  while(bpm>160)bpm/=2;
+  rytBpm=Math.round(bpm);
+  $('rytTempo').value=rytBpm;$('rytBpmVal').textContent=rytBpm+' bpm';
+  $('rytDetect').innerHTML='🥁 Tempo estimé : <b style="color:var(--laiton-vif)">'+rytBpm+' bpm</b> — accord tenu ≈ '+med.toFixed(1)+' s. Ajuste au besoin, puis lance la rythmique par-dessus.';
+  if(rytArret){rytArret();rytArret=null;basculeRythme();}
+}
+$('rytTempo').oninput=e=>{rytBpm=+e.target.value;$('rytBpmVal').textContent=rytBpm+' bpm';
+  if(rytArret){rytArret();rytArret=null;basculeRythme();}};
+$('btnRyt').onclick=basculeRythme;
+$('btnRytDetect').onclick=detecteTempo;
 
 toutRendre();
 va((location.hash||'').slice(1)||'accueil');</script>
