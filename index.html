@@ -29,7 +29,7 @@ body{
   background-image:radial-gradient(circle at 10% -4%, rgba(255,201,75,.09) 0 70px, transparent 70px),radial-gradient(circle at 92% -6%, rgba(239,125,114,.10) 0 80px, transparent 80px),radial-gradient(ellipse 900px 500px at 50% -100px, #283472 0%, var(--bg) 70%);
 }
 h1,h2,h3,.display{font-family:"Fraunces",Georgia,serif}
-.wrap{max-width:1100px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(44px + env(safe-area-inset-bottom))}
+.wrap{max-width:1100px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom))}
 
 /* ---------- entête ---------- */
 header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:4px 0 10px}
@@ -165,6 +165,21 @@ input[type=file]{color:var(--texte2)}
 input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#1d2447;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
 
 footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
+/* ---------- v10 : accueil + navigation ---------- */
+.accueil{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 4px}
+.tuile{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--panel);border:2px solid var(--ligne);border-radius:20px;padding:18px 10px 14px;cursor:pointer;box-shadow:4px 5px 0 rgba(0,0,0,.22);transition:.12s;color:var(--texte);font:inherit;text-align:center}
+.tuile:active{transform:scale(.96)}
+.tuile .emo{font-size:2.1rem;line-height:1}
+.tuile b{font-size:.98rem;font-weight:800}
+.tuile small{color:var(--texte2);font-size:.74rem;line-height:1.25}
+.accueil .tuile:nth-child(4n+1){border-color:var(--laiton)}
+.accueil .tuile:nth-child(4n+2){border-color:var(--laiton-vif)}
+.accueil .tuile:nth-child(4n+3){border-color:var(--ok)}
+.accueil .tuile:nth-child(4n+4){border-color:var(--ivoire)}
+.navbas{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(29,36,71,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:2px solid var(--ligne);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:80}
+.navbas button{background:none;border:none;color:var(--texte2);font-size:.66rem;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px 10px;border-radius:12px}
+.navbas button .emo{font-size:1.3rem;line-height:1}
+.navbas button.actif{color:var(--laiton-vif)}
 /* ---------- v8 : harmonisation mobile ---------- */
 .progs{margin-top:14px}
 @media(max-width:600px){
@@ -222,7 +237,19 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 
 <div class="accordeur carte" id="zoneAccordeur" aria-label="Accordeur de référence"></div>
 
-<div class="grille">
+
+<div class="accueil" id="accueil">
+  <button class="tuile" data-va="accords"><span class="emo">🎼</span><b>Dictionnaire d'accords</b><small>positions, barrés, capo malin</small></button>
+  <button class="tuile" data-va="live"><span class="emo">📺</span><b>Live YouTube</b><small>l'accord à jouer en direct</small></button>
+  <button class="tuile" data-va="morceaux"><span class="emo">🎵</span><b>Mes morceaux</b><small>grilles, fichiers, meilleur capo</small></button>
+  <button class="tuile" data-va="jam"><span class="emo">🎮</span><b>Chord Hero</b><small>le jam noté</small></button>
+  <button class="tuile" data-va="coach"><span class="emo">⏱️</span><b>Coach transitions</b><small>1 minute chrono</small></button>
+  <button class="tuile" data-va="progs"><span class="emo">🪕</span><b>Enchaînements</b><small>progressions à écouter</small></button>
+  <button class="tuile" data-va="oreille"><span class="emo">🎧</span><b>L'Oreille</b><small>reconnaissance à l'écoute</small></button>
+  <button class="tuile" data-va="accordeur"><span class="emo">🎯</span><b>Accordeur</b><small>aiguille de précision</small></button>
+</div>
+
+<div class="grille" id="secAccords">
   <!-- ======= colonne choix ======= -->
   <section class="carte">
     <h2>Choisir un accord</h2>
@@ -263,14 +290,14 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 </div>
 
 <!-- ======= progressions ======= -->
-<section class="carte progs">
+<section class="carte progs" id="secProgs">
   <h2>Enchaînements pour progresser <span>choisis, écoute, rejoue</span></h2>
   <div class="tempo">Tempo <input type="range" id="tempo" min="50" max="140" value="80"> <b id="tempoVal">80</b> bpm</div>
   <div id="listeProgs"></div>
 </section>
 
 <!-- ======= v2 : oreille ======= -->
-<section class="carte progs">
+<section class="carte progs" id="secOreille">
   <h2>L'Oreille — reconnaissance à l'écoute <span>micro</span></h2>
   <p class="vide">Lance l'écoute puis joue un accord devant le micro — ou fais tourner un morceau (YouTube, Deezer, vinyle…) sur tes enceintes : l'appli identifie en direct les accords qu'elle entend et construit l'historique.</p>
   <div class="lecture" style="justify-content:flex-start;margin:12px 0 4px">
@@ -283,7 +310,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 </section>
 
 <!-- ======= v3 : vidéo YouTube ======= -->
-<section class="carte progs">
+<section class="carte progs" id="secLive">
   <h2>Vidéo YouTube <span>colle un lien</span></h2>
   <p class="vide">Colle le lien d'une vidéo : elle s'ouvre ici, dans l'appli. Lance-la (son à fond, sans écouteurs), appuie sur <b>Mode Live</b> : l'accord à jouer s'affiche en grand avec son diagramme, en temps réel, et reste à l'écran avec la vidéo pendant que la grille se construit en dessous. Sur ordinateur, « Son de l'onglet » capture l'audio sans micro.</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
@@ -309,7 +336,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 </section>
 
 <!-- ======= v2 : grille d'un morceau ======= -->
-<section class="carte progs">
+<section class="carte progs" id="secGrille">
   <h2>La grille d'un morceau <span>façon Chordify</span></h2>
   <p class="vide">YouTube et Deezer ne laissent pas une page web lire leurs flux protégés directement. Deux chemins : fais jouer le morceau sur tes enceintes et utilise l'Oreille ci-dessus, ou charge ici un fichier audio que tu possèdes (mp3, m4a, wav) — l'appli en extrait toute la grille d'accords, synchronisée à la lecture.</p>
   <div class="fichier"><input type="file" id="fichierAudio" accept="audio/*"></div>
@@ -331,7 +358,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 </section>
 
 <!-- ======= v8 : mes morceaux ======= -->
-<section class="carte progs">
+<section class="carte progs" id="secMorceaux">
   <h2>Mes morceaux <span>grilles enregistrées</span></h2>
   <div id="listeMorceaux"></div>
 </section>
@@ -361,8 +388,42 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
   <div id="jamFin" hidden></div>
 </section>
 
+<!-- ======= v9 : coach de transitions ======= -->
+<section class="carte progs" id="secCoach">
+  <h2>Coach de transitions <span>1 minute chrono</span></h2>
+  <p class="vide">Le vrai mur du débutant, ce n'est pas l'accord — c'est le <b>changement</b> d'accord. Choisis deux accords, lance le chrono, enchaîne-les le plus de fois possible : l'appli compte tes changements à l'oreille. Refais l'exercice chaque jour et regarde ton record grimper.</p>
+  <div class="types" id="paires" style="margin:10px 0"></div>
+  <div class="sauve" id="coachPerso" style="margin-top:4px"></div>
+  <div class="lecture" style="justify-content:flex-start;margin-top:10px;gap:8px">
+    <span id="coachDuree" style="display:flex;gap:6px"></span>
+    <button class="btn principal" id="btnCoach">⏱️ C'est parti !</button>
+    <button class="btn" id="btnCoachStop" hidden>■ Arrêter</button>
+  </div>
+  <div class="vide" id="coachRecord" style="margin-top:8px"></div>
+  <div id="coachScene" hidden style="position:relative;overflow:hidden">
+    <div class="jam-hud">
+      <span><b id="coachCibleA"></b> ↔ <b id="coachCibleB"></b></span>
+      <span>⏱ <b id="coachChrono"></b></span>
+    </div>
+    <div class="jam-barre"><i id="coachBarre"></i></div>
+    <div class="jam-cible" style="flex-direction:column;gap:4px">
+      <div class="jam-nom display" id="coachCompte">0</div>
+      <div class="vide">changements</div>
+    </div>
+    <div class="jam-retour" id="coachDetecte"></div>
+  </div>
+  <div id="coachFin" hidden></div>
+</section>
+
 <footer>Grat’Tab — développé par TchoPolo 🧡 accords ouverts, barrés &amp; capo · sons générés dans le navigateur, aucune connexion requise.</footer>
 </div>
+<nav class="navbas" aria-label="Navigation principale">
+  <button data-va="accueil"><span class="emo">🏠</span>Accueil</button>
+  <button data-va="accords"><span class="emo">🎼</span>Accords</button>
+  <button data-va="live"><span class="emo">📺</span>Live</button>
+  <button data-va="jam"><span class="emo">🎮</span>Jam</button>
+  <button data-va="coach"><span class="emo">⏱️</span>Coach</button>
+</nav>
 <script>
 /* ================================================================
    DONNÉES MUSICALES
@@ -699,23 +760,26 @@ function rendFiche(){
   rendNotes();rendTypes();rendFavs();
   etat._pos=pos;
 }
-function toutRendre(){rendFiche();rendProgs();rendAccordeur();rendMorceaux();}
+function toutRendre(){rendFiche();rendProgs();rendAccordeur();rendMorceaux();rendCoach();}
 
 /* ---------- événements ---------- */
 document.addEventListener('click',e=>{
   const b=e.target.closest('button,.corde');if(!b)return;
+  if(b.dataset.va!==undefined){va(b.dataset.va);return;}
   if(b.dataset.r!==undefined){etat.root=+b.dataset.r;etat.pos=0;rendFiche();}
   else if(b.dataset.t){etat.type=b.dataset.t;etat.pos=0;rendFiche();}
   else if(b.dataset.p!==undefined){etat.pos=+b.dataset.p;rendFiche();}
-  else if(b.dataset.fr!==undefined){etat.root=+b.dataset.fr;etat.type=b.dataset.ft;etat.pos=0;rendFiche();}
+  else if(b.dataset.fr!==undefined){etat.root=+b.dataset.fr;etat.type=b.dataset.ft;etat.pos=0;rendFiche();va('accords');}
   else if(b.dataset.corde!==undefined){pince(+b.dataset.corde,0,audio().currentTime+0.02);}
   else if(b.dataset.s!==undefined){const s=+b.dataset.s;if(etat._pos&&etat._pos.f[s]>=0)pince(s,etat._pos.f[s],audio().currentTime+0.02);}
   else if(b.dataset.play!==undefined){joueProg(+b.dataset.play);}
-  else if(b.dataset.jam!==undefined){lanceJam(PROGS[+b.dataset.jam].seq.map(a=>({r:a[0],type:a[1]})));document.getElementById('secJam').scrollIntoView({behavior:'smooth'});}
+  else if(b.dataset.jam!==undefined){va('jam');lanceJam(PROGS[+b.dataset.jam].seq.map(a=>({r:a[0],type:a[1]})));}
   else if(b.dataset.mc!==undefined){chargeMorceau(+b.dataset.mc);}
-  else if(b.dataset.mjam!==undefined){const mo=morceaux[+b.dataset.mjam];if(mo){lanceJam(mo.grille.map(s=>({r:s.r,type:s.type})));document.getElementById('secJam').scrollIntoView({behavior:'smooth'});}}
+  else if(b.dataset.mjam!==undefined){const mo=morceaux[+b.dataset.mjam];if(mo){va('jam');lanceJam(mo.grille.map(s=>({r:s.r,type:s.type})));}}
   else if(b.dataset.msup!==undefined){if(confirm('Supprimer ce morceau ?')){morceaux.splice(+b.dataset.msup,1);sauveMorceaux();rendMorceaux();}}
-  else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}
+  else if(b.dataset.cp!==undefined){const p=COACH_PAIRES[+b.dataset.cp];coachSel.ra=p[0];coachSel.ta=p[1];coachSel.rb=p[2];coachSel.tb=p[3];rendCoach();}
+  else if(b.dataset.cd!==undefined){coachSel.duree=+b.dataset.cd;rendCoach();}
+  else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();va('accords');}
 });
 $('jouerBas').onclick=()=>etat._pos&&joueAccord(etat._pos,'bas');
 $('jouerHaut').onclick=()=>etat._pos&&joueAccord(etat._pos,'haut');
@@ -727,7 +791,7 @@ $('instrument').onchange=e=>{etat.instrument=e.target.value;cacheVide();};
 function cacheVide(){for(const k in cache)delete cache[k];}
 $('btnGaucher').onclick=e=>{etat.gaucher=!etat.gaucher;e.target.classList.toggle('actif');rendFiche();};
 $('btnNotation').onclick=e=>{etat.fr=!etat.fr;e.target.textContent=etat.fr?'Do Ré Mi':'C D E';toutRendre();};
-$('btnAccordeur').onclick=()=>$('zoneAccordeur').classList.toggle('ouvert');
+$('btnAccordeur').onclick=()=>va(pageCourante==='accordeur'?'accueil':'accordeur');
 $('tempo').oninput=e=>{etat.tempo=+e.target.value;$('tempoVal').textContent=etat.tempo;};
 
 /* recherche : "Fa#m7", "Sib", "Cmaj7", "solm"… */
@@ -852,7 +916,7 @@ $('btnMicroStop').onclick=()=>{
   $('vuBar').style.width='0';$('confiance').textContent='écoute arrêtée — l\'historique reste affiché';
 };
 $('accordDetecte').style.cursor='pointer';
-$('accordDetecte').onclick=()=>{if(micDernier){etat.root=micDernier.r;etat.type=micDernier.t;etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}};
+$('accordDetecte').onclick=()=>{if(micDernier){etat.root=micDernier.r;etat.type=micDernier.t;etat.pos=0;rendFiche();va('accords');}};
 
 /* ---------- v3 : vidéo YouTube → grille d'accords ---------- */
 let ytArret=null,ytSegs=[],ytEnCours=null,ytDernierT=0;
@@ -1208,7 +1272,135 @@ $('btnSauveMorceau').onclick=()=>{
   $('etatAnalyse').textContent='💾 « '+nom+' » enregistré dans Mes morceaux.';
 };
 
-toutRendre();</script>
+/* ================================================================
+   V9 — COACH DE TRANSITIONS : changements d'accords en 1 minute
+================================================================ */
+const COACH_TYPES=[['maj','Majeur'],['m','m'],['7','7'],['m7','m7']];
+const COACH_PAIRES=[[0,'maj',7,'maj'],[0,'maj',5,'maj'],[7,'maj',2,'maj'],[2,'maj',9,'maj'],[0,'maj',9,'m'],[7,'maj',4,'m'],[4,'m',9,'m'],[2,'maj',9,'maj']];
+let coachSel={ra:0,ta:'maj',rb:7,tb:'maj',duree:60};
+let coachArret=null,coachTimer=null,coachEtat=null,coachStats={};
+try{coachStats=JSON.parse(localStorage.getItem('grattab-transitions')||'{}')}catch(e){}
+function coachCle(){return coachSel.ra+coachSel.ta+'-'+coachSel.rb+coachSel.tb;}
+function coachNoms(){return nomAccord(coachSel.ra,coachSel.ta)+' ↔ '+nomAccord(coachSel.rb,coachSel.tb);}
+function rendCoach(){
+  $('paires').innerHTML=COACH_PAIRES.map((p,i)=>{
+    const actif=(p[0]===coachSel.ra&&p[1]===coachSel.ta&&p[2]===coachSel.rb&&p[3]===coachSel.tb);
+    return `<button class="btn ${actif?'actif':''}" data-cp="${i}">${nomAccord(p[0],p[1])} ↔ ${nomAccord(p[2],p[3])}</button>`;
+  }).join('');
+  const optsR=n=>Array.from({length:12},(_,i)=>`<option value="${i}" ${i===n?'selected':''}>${nomNote(i)}</option>`).join('');
+  const optsT=t=>COACH_TYPES.map(([k,l])=>`<option value="${k}" ${k===t?'selected':''}>${l}</option>`).join('');
+  $('coachPerso').innerHTML=`
+    <select id="cRA">${optsR(coachSel.ra)}</select><select id="cTA">${optsT(coachSel.ta)}</select>
+    <b style="color:var(--laiton-vif)">↔</b>
+    <select id="cRB">${optsR(coachSel.rb)}</select><select id="cTB">${optsT(coachSel.tb)}</select>`;
+  ['cRA','cTA','cRB','cTB'].forEach(id=>document.getElementById(id).onchange=()=>{
+    coachSel.ra=+document.getElementById('cRA').value;coachSel.ta=document.getElementById('cTA').value;
+    coachSel.rb=+document.getElementById('cRB').value;coachSel.tb=document.getElementById('cTB').value;
+    rendCoach();
+  });
+  $('coachDuree').innerHTML=[30,60].map(d=>`<button class="btn ${coachSel.duree===d?'actif':''}" data-cd="${d}">${d} s</button>`).join('');
+  const st=coachStats[coachCle()];
+  $('coachRecord').innerHTML=st?('Record sur '+coachNoms()+' : <b style="color:var(--laiton-vif)">'+st.record+'</b> changements'+(st.histo&&st.histo.length>1?' · dernières séances : '+st.histo.slice(-5).map(x=>x.s).join(' → '):'')):'Première fois sur '+coachNoms()+' — établis ton record !';
+}
+function lanceCoach(){
+  if(coachArret){arreteCoach(true);return;}
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}).then(flux=>{
+    coachEtat={compte:0,dernier:null,debut:Date.now()};
+    $('coachScene').hidden=false;$('coachFin').hidden=true;
+    $('btnCoach').textContent='⏱️ En cours…';$('btnCoachStop').hidden=false;
+    $('coachCibleA').innerHTML=nomAccord(coachSel.ra,coachSel.ta);
+    $('coachCibleB').innerHTML=nomAccord(coachSel.rb,coachSel.tb);
+    $('coachCompte').textContent='0';
+    $('coachDetecte').textContent='joue le premier accord…';
+    gardeEcran(true);
+    coachArret=demarreDetecteur(flux,b=>{
+      if(!b||!coachEtat)return;
+      const estA=(b.r===coachSel.ra&&JAM_FAMILLE[b.t]===JAM_FAMILLE[coachSel.ta]);
+      const estB=(b.r===coachSel.rb&&JAM_FAMILLE[b.t]===JAM_FAMILLE[coachSel.tb]);
+      if(!estA&&!estB){$('coachDetecte').textContent='entendu : '+nomAccord(b.r,b.t)+' — vise '+coachNoms();return;}
+      const lequel=estA?'A':'B';
+      $('coachDetecte').textContent='✓ '+nomAccord(b.r,b.t);
+      if(coachEtat.dernier&&coachEtat.dernier!==lequel){
+        coachEtat.compte++;
+        $('coachCompte').textContent=coachEtat.compte;
+        if(coachEtat.compte%10===0)confettisCoach(14);
+      }
+      coachEtat.dernier=lequel;
+    });
+    const duree=coachSel.duree*1000;
+    coachTimer=setInterval(()=>{
+      if(!coachEtat){clearInterval(coachTimer);return;}
+      const reste=duree-(Date.now()-coachEtat.debut);
+      $('coachBarre').style.width=Math.max(0,100*reste/duree)+'%';
+      $('coachChrono').textContent=Math.max(0,Math.ceil(reste/1000))+' s';
+      if(reste<=0)arreteCoach(false);
+    },100);
+  }).catch(()=>alert('Micro refusé : autorise-le pour lancer le coach.'));
+}
+function confettisCoach(n){
+  const sc=$('coachScene'),cols=['#ef7d72','#ffc94b','#54c98f','#f7eed9'];
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='conf';
+    s.style.left=(5+Math.random()*90)+'%';s.style.background=cols[i%cols.length];
+    s.style.animationDelay=(Math.random()*0.25)+'s';sc.appendChild(s);setTimeout(()=>s.remove(),1400);}
+}
+function arreteCoach(abandon){
+  if(coachTimer)clearInterval(coachTimer);coachTimer=null;
+  if(coachArret)coachArret();coachArret=null;gardeEcran(false);
+  const e=coachEtat;coachEtat=null;
+  $('coachScene').hidden=true;$('btnCoachStop').hidden=true;$('btnCoach').textContent='⏱️ C\'est parti !';
+  if(abandon||!e)return;
+  const cle=coachCle();
+  const st=coachStats[cle]||{record:0,histo:[]};
+  const record=e.compte>st.record;
+  st.record=Math.max(st.record,e.compte);
+  st.histo=(st.histo||[]).concat([{d:Date.now(),s:e.compte}]).slice(-10);
+  coachStats[cle]=st;
+  try{localStorage.setItem('grattab-transitions',JSON.stringify(coachStats))}catch(err){}
+  const parMin=Math.round(e.compte*60/coachSel.duree);
+  let niveau;
+  if(parMin>=60)niveau='🏆 Niveau concert — tes doigts connaissent le chemin par cœur !';
+  else if(parMin>=40)niveau='🔥 Excellent — la transition est presque automatique.';
+  else if(parMin>=20)niveau='💪 Ça vient bien — vise la fluidité plus que la vitesse.';
+  else niveau='🌱 Bon début ! Astuce : repère un doigt « ancre » qui bouge peu entre les deux accords, et garde-le posé.';
+  $('coachFin').hidden=false;
+  $('coachFin').innerHTML=`<div class="jam-fin">
+    <div class="gros">${e.compte} changements</div>
+    <div>${coachNoms()} en ${coachSel.duree} s (${parMin}/min)</div>
+    <div style="margin:6px 0;color:#ffc94b;font-weight:700">${record?'🏆 Nouveau record !':'Record : '+st.record}</div>
+    <div style="max-width:420px;margin:0 auto">${niveau}</div>
+    <button class="btn principal" id="btnRecoach" style="margin-top:8px">↻ Rejouer</button>
+  </div>`;
+  document.getElementById('btnRecoach').onclick=lanceCoach;
+  rendCoach();
+}
+$('btnCoach').onclick=lanceCoach;
+$('btnCoachStop').onclick=()=>arreteCoach(true);
+
+/* ================================================================
+   V10 — NAVIGATION : accueil à tuiles + barre du bas
+================================================================ */
+const PAGES={accueil:[],accords:['secAccords'],accordeur:['zoneAccordeur'],progs:['secProgs'],oreille:['secOreille'],live:['secLive'],morceaux:['secGrille','secMorceaux'],jam:['secJam'],coach:['secCoach']};
+const TOUS_MODULES=[...new Set([].concat(...Object.values(PAGES)))];
+let pageCourante='accueil';
+function va(p){
+  if(!PAGES[p])p='accueil';
+  TOUS_MODULES.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const visible=PAGES[p].includes(id);
+    el.style.display=visible?'':'none';
+    if(id==='zoneAccordeur')el.classList.toggle('ouvert',visible);
+  });
+  const acc=document.getElementById('accueil');
+  if(acc)acc.style.display=(p==='accueil')?'':'none';
+  document.querySelectorAll('.navbas button').forEach(b=>b.classList.toggle('actif',b.dataset.va===p));
+  pageCourante=p;
+  if(location.hash!=='#'+p)location.hash='#'+p;
+  window.scrollTo({top:0});
+}
+window.addEventListener('hashchange',()=>{const p=location.hash.slice(1)||'accueil';if(p!==pageCourante)va(p);});
+
+toutRendre();
+va((location.hash||'').slice(1)||'accueil');</script>
 <script>
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>

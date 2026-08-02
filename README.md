@@ -4,12 +4,15 @@ Application web complète, sans aucune dépendance externe, qui fonctionne hors-
 
 ## Fonctionnalités
 
+L'appli s'ouvre sur un **accueil à tuiles** : chaque module (accords, Live YouTube, morceaux, Chord Hero, coach, oreille, accordeur…) est une page dédiée, avec une barre de navigation fixe en bas de l'écran (Accueil · Accords · Live · Jam · Coach). Le bouton retour du téléphone fonctionne entre les pages.
+
 - **Tous les accords** : 12 fondamentales × 17 types (majeur, mineur, 7, m7, maj7, sus2/4, 6, m6, 9, add9, dim, dim7, aug, m7♭5…)
 - **Positions ouvertes et barrés** transposables (formes Mi, La, Ré), doigtés, notes réelles
 - **Écoute** : synthèse de corde pincée dans le navigateur — 3 timbres (classique nylon, électro-acoustique, électrique), gratté, arpège, note par note
 - **Capodastre** 0–9 avec pédagogie de transposition, et **Capo malin** qui transforme un accord difficile en forme ouverte
 - **L'Oreille** : reconnaissance des accords au micro, en direct, avec historique
 - **Mes morceaux** : chaque grille captée en Live peut être enregistrée avec le nom de la chanson, pour la recharger ou la jouer en Jam plus tard
+- **Coach de transitions** : chrono 30/60 s, l'appli compte à l'oreille tes changements entre deux accords, avec records et historique par paire
 - **Chord Hero (Jam noté)** : l'appli t'écoute jouer une grille et note ta précision — points, combos, record
 - **Mode Live YouTube** : la vidéo joue dans l'appli et l'accord à jouer s'affiche en direct, en grand, avec son diagramme
 - **Grille d'un morceau** : charge un fichier audio, l'appli extrait la grille d'accords synchronisée à la lecture (façon Chordify), avec meilleur capo et accords simplifiés

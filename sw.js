@@ -1,5 +1,5 @@
 /* Grat'Tab — service worker : l'appli fonctionne entièrement hors-ligne */
-const CACHE = 'grattab-v8';
+const CACHE = 'grattab-v10';
 const FICHIERS = [
   './',
   './index.html',
