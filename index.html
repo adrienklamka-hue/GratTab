@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Luthier — Dictionnaire d'accords de guitare</title>
+<meta name="description" content="Tous les accords de guitare : positions ouvertes, barrés, capo, avec écoute des notes. Classique, électro-acoustique, électrique.">
+<meta name="theme-color" content="#191008">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luthier">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#191008; --panel:#241710; --panel2:#2f1f13; --ligne:#3f2b1a;
+  --laiton:#c9924b; --laiton-vif:#e8b563; --ivoire:#f2e7d5;
+  --texte:#f2e7d5; --texte2:#b39b7d; --rouge:#c66a52; --ok:#8fae6f;
+  --rayon:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg); color:var(--texte);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  line-height:1.5; min-height:100vh;
+  background-image:radial-gradient(ellipse 900px 500px at 50% -100px, #2a1a0e 0%, var(--bg) 70%);
+}
+h1,h2,h3,.display{font-family:"Fraunces",Georgia,serif}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 14px 60px}
+
+/* ---------- entête ---------- */
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:10px 0 18px}
+.marque{display:flex;align-items:center;gap:12px}
+.rosace{width:44px;height:44px;border-radius:50%;border:3px solid var(--laiton);
+  background:repeating-conic-gradient(from 0deg,var(--laiton) 0 6deg,transparent 6deg 14deg);
+  box-shadow:inset 0 0 0 6px var(--bg), inset 0 0 0 8px var(--laiton);flex:none}
+.marque h1{font-size:1.7rem;font-weight:700;letter-spacing:.5px}
+.marque small{display:block;color:var(--texte2);font-family:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.outils{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,button,input[type=text]{font:inherit;color:var(--texte)}
+select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:8px 10px}
+.btn{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:8px 12px;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--laiton)}
+.btn.actif{background:var(--laiton);color:#241407;border-color:var(--laiton);font-weight:600}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--laiton-vif);outline-offset:2px}
+
+/* ---------- disposition ---------- */
+.grille{display:grid;grid-template-columns:340px 1fr;gap:18px}
+@media(max-width:860px){.grille{grid-template-columns:1fr}}
+.carte{background:var(--panel);border:1px solid var(--ligne);border-radius:var(--rayon);padding:16px}
+.carte h2{font-size:1.05rem;margin-bottom:10px;color:var(--laiton-vif)}
+.carte h2 span{color:var(--texte2);font-family:-apple-system,sans-serif;font-size:.72rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-left:8px}
+
+/* sélecteurs de notes / types */
+.notes12{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}
+.notes12 .btn{padding:9px 0;text-align:center;font-weight:600}
+.types{display:flex;flex-wrap:wrap;gap:6px}
+.types .btn{padding:6px 11px;font-size:.9rem}
+.recherche{width:100%;background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:9px 12px;margin-bottom:12px}
+.recherche::placeholder{color:var(--texte2)}
+.favs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.favs .btn{font-size:.85rem;padding:5px 10px}
+.vide{color:var(--texte2);font-size:.85rem}
+
+/* ---------- fiche accord ---------- */
+.entete-accord{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.nom-accord{font-size:2.4rem;font-weight:700;line-height:1}
+.nom-reel{color:var(--laiton-vif);font-size:1rem}
+.etoile{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--ligne);line-height:1}
+.etoile.actif{color:var(--laiton-vif)}
+.compo{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.jeton{background:var(--panel2);border:1px solid var(--ligne);border-radius:999px;padding:4px 12px;font-size:.85rem}
+.jeton b{color:var(--laiton-vif)}
+.jeton small{color:var(--texte2);margin-left:6px}
+
+.variations{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 6px}
+.variations .btn{font-size:.82rem;padding:6px 10px}
+
+.scene{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px}
+.diagramme{width:100%;max-width:340px}
+.corde{transition:.1s}
+.corde.vib{animation:vib .5s ease-out}
+@keyframes vib{0%,100%{transform:translateX(0)}20%{transform:translateX(1.6px)}40%{transform:translateX(-1.4px)}60%{transform:translateX(1px)}80%{transform:translateX(-.6px)}}
+.lecture{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.lecture .btn{padding:10px 16px;font-weight:600}
+.lecture .principal{background:var(--laiton);color:#241407;border-color:var(--laiton)}
+.astuce{color:var(--texte2);font-size:.8rem;text-align:center}
+
+/* capo */
+.capo{display:flex;align-items:center;gap:12px;margin-top:16px;background:var(--panel2);border-radius:10px;padding:10px 14px}
+.capo input[type=range]{flex:1;accent-color:var(--laiton)}
+.capo b{min-width:70px;text-align:center}
+.bandeau-capo{margin-top:8px;background:linear-gradient(90deg,#3a2814,#2f1f13);border:1px solid var(--laiton);border-radius:10px;padding:8px 14px;font-size:.9rem}
+.bandeau-capo b{color:var(--laiton-vif)}
+
+/* pédagogie */
+.pedago{margin-top:14px;border-top:1px dashed var(--ligne);padding-top:12px;font-size:.9rem;color:var(--texte2)}
+.pedago b{color:var(--texte)}
+
+/* ---------- progressions ---------- */
+.progs{margin-top:18px}
+.prog{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px;border:1px solid var(--ligne);border-radius:10px;margin-bottom:8px;background:var(--panel2)}
+.prog .nom{font-weight:600;min-width:150px}
+.prog .accords{display:flex;flex-wrap:wrap;gap:6px}
+.prog .accords .btn{font-size:.85rem;padding:5px 10px}
+.prog .accords .btn.joue{background:var(--laiton);color:#241407;border-color:var(--laiton)}
+.tempo{display:flex;align-items:center;gap:10px;margin:8px 0 14px;color:var(--texte2);font-size:.9rem}
+.tempo input{accent-color:var(--laiton)}
+
+/* accordeur */
+.accordeur{display:none;gap:6px;flex-wrap:wrap;margin-top:10px}
+.accordeur.ouvert{display:flex}
+
+/* ---------- v2 : oreille & grille ---------- */
+.detecte{text-align:center;margin:8px 0}
+.vu{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-top:6px}
+.vu i{display:block;height:100%;width:0;background:var(--laiton);transition:width .12s}
+.historique{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.timeline{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+.bloc{background:var(--panel2);border:1px solid var(--ligne);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.92rem;min-width:58px;text-align:center}
+.bloc small{display:block;color:var(--texte2);font-size:.66rem}
+.bloc.actif{background:var(--laiton);color:#241407;border-color:var(--laiton)}
+.bloc.actif small{color:#241407}
+.capobar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;background:var(--panel2);padding:10px 12px;border-radius:10px;font-size:.9rem}
+.capobar label{display:flex;gap:6px;align-items:center;color:var(--texte2)}
+.btn.principal{background:var(--laiton);color:#241407;border-color:var(--laiton);font-weight:600}
+.yt-cadre{margin-top:8px}
+.yt-cadre iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
+.fichier{color:var(--texte2);font-size:.9rem;margin-top:8px}
+input[type=file]{color:var(--texte2)}
+input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#241407;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
+
+footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="marque">
+    <div class="rosace" aria-hidden="true"></div>
+    <div>
+      <h1>Luthier</h1>
+      <small>Dictionnaire d'accords · guitare</small>
+    </div>
+  </div>
+  <div class="outils">
+    <select id="instrument" title="Timbre de l'instrument" aria-label="Instrument">
+      <option value="nylon">🎻 Classique (nylon)</option>
+      <option value="folk" selected>🪕 Électro-acoustique</option>
+      <option value="elec">🎸 Électrique</option>
+    </select>
+    <button class="btn" id="btnNotation" title="Notation des notes">Do Ré Mi</button>
+    <button class="btn" id="btnGaucher" title="Inverser le manche">Gaucher</button>
+    <button class="btn" id="btnAccordeur" title="Sons des cordes à vide">Accorder</button>
+  </div>
+</header>
+
+<div class="accordeur carte" id="zoneAccordeur" aria-label="Accordeur de référence"></div>
+
+<div class="grille">
+  <!-- ======= colonne choix ======= -->
+  <section class="carte">
+    <h2>Choisir un accord</h2>
+    <input class="recherche" id="recherche" type="text" placeholder="Recherche rapide : Fa#m7, Sib, Cmaj7…" autocomplete="off">
+    <div class="notes12" id="notes12"></div>
+    <div class="types" id="types"></div>
+    <h2 style="margin-top:16px">Favoris <span>appuie sur ★</span></h2>
+    <div class="favs" id="favs"><span class="vide">Aucun favori pour l'instant.</span></div>
+  </section>
+
+  <!-- ======= fiche accord ======= -->
+  <section class="carte">
+    <div class="entete-accord">
+      <div class="nom-accord display" id="nomAccord">Do</div>
+      <div class="nom-reel" id="nomReel"></div>
+      <button class="etoile" id="etoile" title="Ajouter aux favoris" aria-label="Favori">★</button>
+    </div>
+    <div class="compo" id="compo"></div>
+    <div class="variations" id="variations"></div>
+    <div class="scene">
+      <div class="diagramme" id="diagramme"></div>
+      <div class="lecture">
+        <button class="btn principal" id="jouerBas">▼ Gratter</button>
+        <button class="btn" id="jouerHaut">▲ Remonter</button>
+        <button class="btn" id="jouerArp">♪ Arpège</button>
+      </div>
+      <div class="astuce">Touche une corde du diagramme pour entendre sa note seule.</div>
+    </div>
+    <div class="capo">
+      <span>Capodastre</span>
+      <input type="range" id="capo" min="0" max="9" value="0" aria-label="Position du capodastre">
+      <b id="capoVal">sans</b>
+      <button class="btn" id="btnCapoFiche" title="Trouver le capo qui rend cet accord jouable en position ouverte">🪄 Capo malin</button>
+    </div>
+    <div class="bandeau-capo" id="bandeauCapo" hidden></div>
+    <div class="pedago" id="pedago"></div>
+  </section>
+</div>
+
+<!-- ======= progressions ======= -->
+<section class="carte progs">
+  <h2>Enchaînements pour progresser <span>choisis, écoute, rejoue</span></h2>
+  <div class="tempo">Tempo <input type="range" id="tempo" min="50" max="140" value="80"> <b id="tempoVal">80</b> bpm</div>
+  <div id="listeProgs"></div>
+</section>
+
+<!-- ======= v2 : oreille ======= -->
+<section class="carte progs">
+  <h2>L'Oreille — reconnaissance à l'écoute <span>micro</span></h2>
+  <p class="vide">Lance l'écoute puis joue un accord devant le micro — ou fais tourner un morceau (YouTube, Deezer, vinyle…) sur tes enceintes : l'appli identifie en direct les accords qu'elle entend et construit l'historique.</p>
+  <div class="lecture" style="justify-content:flex-start;margin:12px 0 4px">
+    <button class="btn principal" id="btnMicro">🎙️ Écouter</button>
+    <button class="btn" id="btnMicroStop" hidden>■ Arrêter</button>
+  </div>
+  <div class="detecte"><div class="nom-accord display" id="accordDetecte">—</div><div class="vide" id="confiance">en attente du micro</div></div>
+  <div class="vu"><i id="vuBar"></i></div>
+  <div class="historique" id="histo"></div>
+</section>
+
+<!-- ======= v3 : vidéo YouTube ======= -->
+<section class="carte progs">
+  <h2>Vidéo YouTube <span>colle un lien</span></h2>
+  <p class="vide">Colle le lien d'une vidéo : elle s'ouvre ici, puis l'appli l'écoute pendant la lecture et en extrait la grille d'accords en direct. Sur ordinateur (Chrome ou Edge), « Son de l'onglet » capture l'audio proprement, sans micro. Sur téléphone, lance la vidéo avec le son sur les enceintes et choisis le micro.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+    <input class="recherche" id="urlYt" type="text" placeholder="https://www.youtube.com/watch?v=…" style="flex:1;min-width:220px;margin:0">
+    <button class="btn principal" id="btnYt">Charger</button>
+  </div>
+  <div class="yt-cadre" id="cadreYt"></div>
+  <div class="vide" id="etatYt" style="margin-top:8px"></div>
+  <div class="lecture" id="capYt" hidden style="justify-content:flex-start;margin-top:10px">
+    <button class="btn principal" id="btnYtOnglet">🖥️ Analyser le son de l'onglet</button>
+    <button class="btn" id="btnYtMicro">🎙️ Analyser par le micro</button>
+    <button class="btn" id="btnYtStop" hidden>■ Terminer et garder la grille</button>
+  </div>
+</section>
+
+<!-- ======= v2 : grille d'un morceau ======= -->
+<section class="carte progs">
+  <h2>La grille d'un morceau <span>façon Chordify</span></h2>
+  <p class="vide">YouTube et Deezer ne laissent pas une page web lire leurs flux protégés directement. Deux chemins : fais jouer le morceau sur tes enceintes et utilise l'Oreille ci-dessus, ou charge ici un fichier audio que tu possèdes (mp3, m4a, wav) — l'appli en extrait toute la grille d'accords, synchronisée à la lecture.</p>
+  <div class="fichier"><input type="file" id="fichierAudio" accept="audio/*"></div>
+  <div id="etatAnalyse" class="vide" style="margin-top:8px"></div>
+  <audio id="lecteurAudio" controls style="width:100%;margin-top:10px" hidden></audio>
+  <div class="capobar" id="capobar" hidden>
+    <span>Capo
+      <select id="capoGrille"><option value="0">sans</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
+    </span>
+    <button class="btn" id="btnCapoMalin">🪄 Meilleur capo</button>
+    <label><input type="checkbox" id="simplif"> Accords simplifiés</label>
+    <span class="vide" id="capoInfo"></span>
+  </div>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+<footer>Luthier — accords ouverts, barrés &amp; capo · sons générés dans le navigateur (aucune connexion requise).</footer>
+</div>
+<script>
+/* ================================================================
+   DONNÉES MUSICALES
+================================================================ */
+const NOTES_INT=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NOTES_FR=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const MIDI_CORDES=[40,45,50,55,59,64]; // Mi La Ré Sol Si Mi
+const TYPES=[
+ ['maj','Majeur','',[0,4,7]],
+ ['m','Mineur','m',[0,3,7]],
+ ['7','7ᵉ de dominante','7',[0,4,7,10]],
+ ['m7','Mineur 7','m7',[0,3,7,10]],
+ ['maj7','Majeur 7','maj7',[0,4,7,11]],
+ ['sus2','Sus2','sus2',[0,2,7]],
+ ['sus4','Sus4','sus4',[0,5,7]],
+ ['7sus4','7 sus4','7sus4',[0,5,7,10]],
+ ['6','Sixte','6',[0,4,7,9]],
+ ['m6','Mineur 6','m6',[0,3,7,9]],
+ ['add9','Add 9','add9',[0,4,7,14]],
+ ['9','Neuvième','9',[0,4,7,10,14]],
+ ['m9','Mineur 9','m9',[0,3,7,10,14]],
+ ['dim','Diminué','dim',[0,3,6]],
+ ['dim7','Diminué 7','dim7',[0,3,6,9]],
+ ['aug','Augmenté','aug',[0,4,8]],
+ ['m7b5','Demi-diminué','m7♭5',[0,3,6,10]],
+];
+const NOM_INTERVALLE={0:'F',2:'2',3:'3m',4:'3M',5:'4',6:'5♭',7:'5',8:'5♯',9:'6',10:'7m',11:'7M',14:'9'};
+
+/* Positions ouvertes classiques : "root|type" -> {f:frettes, d:doigts} (corde 6 → 1) */
+const OUVERTS={
+ '0|maj':{f:[-1,3,2,0,1,0],d:[0,3,2,0,1,0]}, '0|7':{f:[-1,3,2,3,1,0],d:[0,3,2,4,1,0]},
+ '0|maj7':{f:[-1,3,2,0,0,0],d:[0,3,2,0,0,0]}, '0|add9':{f:[-1,3,2,0,3,0],d:[0,2,1,0,3,0]},
+ '9|maj':{f:[-1,0,2,2,2,0],d:[0,0,1,2,3,0]}, '9|m':{f:[-1,0,2,2,1,0],d:[0,0,2,3,1,0]},
+ '9|7':{f:[-1,0,2,0,2,0],d:[0,0,2,0,3,0]}, '9|m7':{f:[-1,0,2,0,1,0],d:[0,0,2,0,1,0]},
+ '9|maj7':{f:[-1,0,2,1,2,0],d:[0,0,2,1,3,0]}, '9|sus2':{f:[-1,0,2,2,0,0],d:[0,0,1,2,0,0]},
+ '9|sus4':{f:[-1,0,2,2,3,0],d:[0,0,1,2,3,0]}, '9|6':{f:[-1,0,2,2,2,2],d:[0,0,1,1,1,1]},
+ '9|m6':{f:[-1,0,2,2,1,2],d:[0,0,2,3,1,4]},
+ '7|maj':{f:[3,2,0,0,0,3],d:[2,1,0,0,0,3]}, '7|7':{f:[3,2,0,0,0,1],d:[3,2,0,0,0,1]},
+ '7|6':{f:[3,2,0,0,0,0],d:[2,1,0,0,0,0]}, '7|add9':{f:[3,2,0,2,0,3],d:[2,1,0,3,0,4]},
+ '4|maj':{f:[0,2,2,1,0,0],d:[0,2,3,1,0,0]}, '4|m':{f:[0,2,2,0,0,0],d:[0,2,3,0,0,0]},
+ '4|7':{f:[0,2,0,1,0,0],d:[0,2,0,1,0,0]}, '4|m7':{f:[0,2,0,0,0,0],d:[0,2,0,0,0,0]},
+ '4|maj7':{f:[0,2,1,1,0,0],d:[0,3,1,2,0,0]}, '4|sus4':{f:[0,2,2,2,0,0],d:[0,2,3,4,0,0]},
+ '4|add9':{f:[0,2,4,1,0,0],d:[0,2,4,1,0,0]},
+ '2|maj':{f:[-1,-1,0,2,3,2],d:[0,0,0,1,3,2]}, '2|m':{f:[-1,-1,0,2,3,1],d:[0,0,0,2,3,1]},
+ '2|7':{f:[-1,-1,0,2,1,2],d:[0,0,0,2,1,3]}, '2|m7':{f:[-1,-1,0,2,1,1],d:[0,0,0,2,1,1]},
+ '2|maj7':{f:[-1,-1,0,2,2,2],d:[0,0,0,1,1,1]}, '2|sus2':{f:[-1,-1,0,2,3,0],d:[0,0,0,1,3,0]},
+ '2|sus4':{f:[-1,-1,0,2,3,3],d:[0,0,0,1,2,3]}, '2|6':{f:[-1,-1,0,2,0,2],d:[0,0,0,2,0,3]},
+ '2|m6':{f:[-1,-1,0,2,0,1],d:[0,0,0,2,0,1]},
+ '11|7':{f:[-1,2,1,2,0,2],d:[0,2,1,3,0,4]},
+ '5|maj':{f:[-1,-1,3,2,1,1],d:[0,0,3,2,1,1]},
+};
+
+/* Formes barrées transposables : par type, liste {b:corde fondamentale, rel, d:doigts} */
+const BARRES={
+ maj:[{b:6,rel:[0,2,2,1,0,0],d:[1,3,4,2,1,1]},{b:5,rel:[-1,0,2,2,2,0],d:[0,1,2,3,4,1]}],
+ m:[{b:6,rel:[0,2,2,0,0,0],d:[1,3,4,1,1,1]},{b:5,rel:[-1,0,2,2,1,0],d:[0,1,3,4,2,1]}],
+ '7':[{b:6,rel:[0,2,0,1,0,0],d:[1,3,1,2,1,1]},{b:5,rel:[-1,0,2,0,2,0],d:[0,1,3,1,4,1]}],
+ m7:[{b:6,rel:[0,2,0,0,0,0],d:[1,3,1,1,1,1]},{b:5,rel:[-1,0,2,0,1,0],d:[0,1,3,1,2,1]}],
+ maj7:[{b:6,rel:[0,-9,1,1,0,-9],d:[1,0,3,4,1,0]},{b:5,rel:[-1,0,2,1,2,0],d:[0,1,3,2,4,1]}],
+ sus2:[{b:5,rel:[-1,0,2,2,0,0],d:[0,1,3,4,1,1]}],
+ sus4:[{b:6,rel:[0,2,2,2,0,0],d:[1,2,3,4,1,1]},{b:5,rel:[-1,0,2,2,3,0],d:[0,1,2,3,4,1]}],
+ '7sus4':[{b:6,rel:[0,2,0,2,0,0],d:[1,3,1,4,1,1]}],
+ '6':[{b:5,rel:[-1,0,2,2,2,2],d:[0,1,3,3,3,3]}],
+ m6:[{b:5,rel:[-1,0,2,2,1,2],d:[0,1,3,3,2,4]}],
+ add9:[{b:6,rel:[0,2,2,1,0,2],d:[1,2,3,1,1,4]}],
+ '9':[{b:6,rel:[0,2,0,1,0,2],d:[1,3,1,2,1,4]}],
+ m9:[{b:6,rel:[0,2,0,0,0,2],d:[1,3,1,1,1,4]}],
+ dim:[{b:5,rel:[-1,0,1,2,1,-9],d:[0,1,2,4,3,0]}],
+ dim7:[{b:4,rel:[-1,-1,0,1,0,1],d:[0,0,1,3,2,4]}],
+ aug:[{b:5,rel:[-1,0,3,2,2,-9],d:[0,1,4,2,3,0]},{b:6,rel:[0,-9,2,1,1,-9],d:[1,0,4,2,3,0]}],
+ m7b5:[{b:5,rel:[-1,0,1,0,1,-9],d:[0,1,3,2,4,0]}],
+};
+const BASE_CORDE={6:4,5:9,4:2}; // note à vide de la corde fondamentale
+
+/* Progressions pédagogiques */
+const PROGS=[
+ {nom:'Les 3 accords du folk',info:'Do · Sol · La m · Fa — la base de centaines de chansons.',seq:[[0,'maj'],[7,'maj'],[9,'m'],[5,'maj']]},
+ {nom:'Pop moderne I–V–vi–IV',info:'En Sol, l\'enchaînement le plus joué au monde.',seq:[[7,'maj'],[2,'maj'],[4,'m'],[0,'maj']]},
+ {nom:'Blues 12 mesures',info:'En La, avec accords de 7ᵉ pour la couleur blues.',seq:[[9,'7'],[2,'7'],[9,'7'],[4,'7']]},
+ {nom:'Jazz ii–V–I',info:'En Do : le mouvement fondamental du jazz.',seq:[[2,'m7'],[7,'7'],[0,'maj7']]},
+ {nom:'Rock en La',info:'Trois majeurs qui claquent, à jouer en rythme.',seq:[[9,'maj'],[2,'maj'],[4,'maj']]},
+ {nom:'Ballade andalouse',info:'La m · Sol · Fa · Mi — cadence descendante espagnole.',seq:[[9,'m'],[7,'maj'],[5,'maj'],[4,'maj']]},
+];
+
+/* ================================================================
+   ÉTAT
+================================================================ */
+let etat={root:0,type:'maj',pos:0,capo:0,gaucher:false,fr:true,instrument:'folk',tempo:80};
+let favoris=[];
+try{favoris=JSON.parse(localStorage.getItem('luthier-favs')||'[]')}catch(e){}
+function sauveFavs(){try{localStorage.setItem('luthier-favs',JSON.stringify(favoris))}catch(e){}}
+
+const nomNote=i=>(etat.fr?NOTES_FR:NOTES_INT)[((i%12)+12)%12];
+const typeDef=k=>TYPES.find(t=>t[0]===k);
+const nomAccord=(r,t)=>nomNote(r)+typeDef(t)[2];
+
+/* ================================================================
+   CONSTRUCTION DES POSITIONS
+================================================================ */
+function positions(root,type){
+  const res=[];const vus=new Set();
+  const ajoute=(f,d,label)=>{const cle=f.join(',');if(vus.has(cle))return;vus.add(cle);res.push({f,d,label});};
+  const o=OUVERTS[root+'|'+type];
+  if(o)ajoute(o.f,o.d,'Position ouverte');
+  (BARRES[type]||[]).forEach(sh=>{
+    let fr=((root-BASE_CORDE[sh.b])%12+12)%12;
+    if(fr===0)fr=(o? 12:0); // évite le doublon avec l'ouvert, sinon forme à vide
+    if(fr===0){
+      const f=sh.rel.map(r=>r<-1?-1:r), d=sh.d.map((x,i)=>sh.rel[i]===0?0:x);
+      ajoute(f,d,'Position ouverte');
+    }else if(fr<=12){
+      const f=sh.rel.map(r=>r===-1||r<-1?-1:r+fr);
+      ajoute(f,sh.d,'Barré forme '+(sh.b===6?'Mi':sh.b===5?'La':'Ré')+' · case '+fr);
+    }
+  });
+  res.sort((a,b)=>Math.min(...a.f.filter(x=>x>0),99)-Math.min(...b.f.filter(x=>x>0),99));
+  return res;
+}
+
+/* ================================================================
+   DIAGRAMME SVG
+================================================================ */
+function dessine(pos){
+  const L=etat.gaucher;
+  const franchies=pos.f.filter(x=>x>0);
+  const min=franchies.length?Math.min(...franchies):1;
+  const max=franchies.length?Math.max(...franchies):4;
+  const base=max<=4?1:min;
+  const NB=Math.max(4,max-base+1);
+  const W=300,PX=38,PT=54,PB=34,cw=(W-2*PX)/5,fh=44,H=PT+NB*fh+PB;
+  const cx=s=>PX+(L?(5-s):s)*cw; // s: 0=corde 6 grave … 5=chanterelle
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Diagramme d'accord">`;
+  // sillet ou n° de case
+  if(base===1)svg+=`<rect x="${PX-3}" y="${PT-7}" width="${W-2*PX+6}" height="7" rx="2" fill="#f2e7d5"/>`;
+  else svg+=`<text x="${L?W-6:6}" y="${PT+fh*0.62}" fill="#c9924b" font-size="15" font-weight="700" text-anchor="${L?'end':'start'}">${base}</text>`;
+  // frettes
+  for(let i=0;i<=NB;i++)svg+=`<line x1="${PX}" y1="${PT+i*fh}" x2="${W-PX}" y2="${PT+i*fh}" stroke="#5a3f26" stroke-width="2"/>`;
+  // cordes (cliquables)
+  for(let s=0;s<6;s++){
+    const ep=3-s*0.35;
+    svg+=`<line class="corde" data-s="${s}" x1="${cx(s)}" y1="${PT}" x2="${cx(s)}" y2="${PT+NB*fh}" stroke="#c9924b" stroke-width="${ep}" style="cursor:pointer"/>`;
+  }
+  // barré : doigt 1 posé sur ≥2 cordes à la même case
+  const c1=pos.f.map((f,i)=>({f,d:pos.d[i],i})).filter(x=>x.d===1&&x.f>0);
+  if(c1.length>=2&&c1.every(x=>x.f===c1[0].f)){
+    const y=PT+(c1[0].f-base)*fh+fh/2;
+    const xs=c1.map(x=>cx(x.i));
+    svg+=`<rect x="${Math.min(...xs)-11}" y="${y-11}" width="${Math.abs(xs[xs.length-1]-xs[0])+22}" height="22" rx="11" fill="#e8b563"/>`;
+  }
+  // pastilles, croix, notes
+  for(let s=0;s<6;s++){
+    const f=pos.f[s],d=pos.d[s],x=cx(s);
+    if(f===-1){svg+=`<text x="${x}" y="${PT-16}" fill="#c66a52" font-size="16" font-weight="700" text-anchor="middle">✕</text>`;continue;}
+    if(f===0)svg+=`<circle cx="${x}" cy="${PT-21}" r="7" fill="none" stroke="#f2e7d5" stroke-width="2"/>`;
+    else{
+      const y=PT+(f-base)*fh+fh/2;
+      svg+=`<circle cx="${x}" cy="${y}" r="12.5" fill="#e8b563"/>`;
+      if(d)svg+=`<text x="${x}" y="${y+4.5}" fill="#241407" font-size="13" font-weight="700" text-anchor="middle">${d}</text>`;
+    }
+    const midi=MIDI_CORDES[s]+f+etat.capo;
+    svg+=`<text x="${x}" y="${H-12}" fill="#b39b7d" font-size="11.5" text-anchor="middle">${nomNote(midi)}</text>`;
+  }
+  svg+='</svg>';
+  return svg;
+}
+
+/* ================================================================
+   AUDIO — synthèse de corde pincée (Karplus-Strong)
+================================================================ */
+let ctxA=null;const cache={};
+function audio(){if(!ctxA)ctxA=new (window.AudioContext||window.webkitAudioContext)();if(ctxA.state==='suspended')ctxA.resume();return ctxA;}
+function corde(freq){
+  const inst=etat.instrument,cle=inst+'|'+freq.toFixed(1);
+  if(cache[cle])return cache[cle];
+  const c=audio(),sr=c.sampleRate;
+  const P={nylon:{dur:2.2,dec:0.994,bri:0.35,drive:0},folk:{dur:2.8,dec:0.996,bri:0.75,drive:0},elec:{dur:3.6,dec:0.998,bri:0.6,drive:2.2}}[inst];
+  const N=Math.max(2,Math.round(sr/freq)),len=Math.floor(sr*P.dur);
+  const buf=c.createBuffer(1,len,sr),out=buf.getChannelData(0);
+  const dl=new Float32Array(N);let prev=0;
+  for(let i=0;i<N;i++){const n=Math.random()*2-1;prev=P.bri*n+(1-P.bri)*prev;dl[i]=prev;}
+  let p=0;
+  for(let i=0;i<len;i++){
+    const nx=(p+1)%N;
+    let v=P.dec*0.5*(dl[p]+dl[nx]);
+    dl[p]=v;p=nx;
+    if(P.drive)v=Math.tanh(v*P.drive)/P.drive*1.4;
+    out[i]=v;
+  }
+  cache[cle]=buf;return buf;
+}
+function pince(s,fret,quand,vol=0.9){
+  const c=audio(),midi=MIDI_CORDES[s]+fret+etat.capo,freq=440*Math.pow(2,(midi-69)/12);
+  const src=c.createBufferSource();src.buffer=corde(freq);
+  const g=c.createGain();g.gain.value=vol;
+  src.connect(g).connect(c.destination);src.start(quand);
+  const el=document.querySelector(`.corde[data-s="${s}"]`);
+  if(el)setTimeout(()=>{el.classList.remove('vib');void el.offsetWidth;el.classList.add('vib');},Math.max(0,(quand-c.currentTime)*1000));
+}
+function joueAccord(pos,mode){
+  const c=audio();let t=c.currentTime+0.03;
+  let ordre=[0,1,2,3,4,5].filter(s=>pos.f[s]>=0);
+  if(mode==='haut')ordre=ordre.slice().reverse();
+  const pas=mode==='arp'?0.24:0.045;
+  ordre.forEach((s,i)=>pince(s,pos.f[s],t+i*pas,mode==='arp'?0.95:0.8));
+}
+
+/* ================================================================
+   RENDU / INTERACTIONS
+================================================================ */
+const $=id=>document.getElementById(id);
+function rendNotes(){
+  $('notes12').innerHTML=Array.from({length:12},(_,i)=>`<button class="btn ${i===etat.root?'actif':''}" data-r="${i}">${nomNote(i)}</button>`).join('');
+}
+function rendTypes(){
+  $('types').innerHTML=TYPES.map(t=>`<button class="btn ${t[0]===etat.type?'actif':''}" data-t="${t[0]}" title="${t[1]}">${t[2]||'Majeur'}</button>`).join('');
+}
+function rendFavs(){
+  $('favs').innerHTML=favoris.length?favoris.map(f=>`<button class="btn" data-fr="${f[0]}" data-ft="${f[1]}">${nomAccord(f[0],f[1])}</button>`).join(''):'<span class="vide">Aucun favori pour l\'instant.</span>';
+}
+function rendProgs(){
+  $('listeProgs').innerHTML=PROGS.map((p,pi)=>`<div class="prog">
+    <div><div class="nom">${p.nom}</div><div class="vide">${p.info}</div></div>
+    <div class="accords" id="prog${pi}">${p.seq.map((a,ai)=>`<button class="btn" data-pi="${pi}" data-ai="${ai}">${nomAccord(a[0],a[1])}</button>`).join('')}</div>
+    <button class="btn principal" data-play="${pi}">▶ Écouter</button>
+  </div>`).join('');
+}
+function rendAccordeur(){
+  $('zoneAccordeur').innerHTML='<b style="margin-right:6px">Cordes à vide :</b>'+MIDI_CORDES.map((m,s)=>`<button class="btn" data-corde="${s}">${['6ᵉ','5ᵉ','4ᵉ','3ᵉ','2ᵉ','1ʳᵉ'][s]} · ${nomNote(m)}</button>`).join('');
+}
+function rendFiche(){
+  const liste=positions(etat.root,etat.type);
+  if(etat.pos>=liste.length)etat.pos=0;
+  const pos=liste[etat.pos]||liste[0];
+  $('nomAccord').textContent=nomAccord(etat.root,etat.type);
+  $('nomReel').textContent=etat.capo?'sonne '+nomAccord(etat.root+etat.capo,etat.type):'';
+  const fav=favoris.some(f=>f[0]===etat.root&&f[1]===etat.type);
+  $('etoile').classList.toggle('actif',fav);
+  const def=typeDef(etat.type);
+  $('compo').innerHTML=def[3].map(iv=>`<span class="jeton"><b>${nomNote(etat.root+iv)}</b><small>${NOM_INTERVALLE[iv]||iv}</small></span>`).join('');
+  $('variations').innerHTML=liste.map((p,i)=>`<button class="btn ${i===etat.pos?'actif':''}" data-p="${i}">${p.label}</button>`).join('')||'<span class="vide">Aucune position répertoriée.</span>';
+  $('diagramme').innerHTML=pos?dessine(pos):'';
+  $('capoVal').textContent=etat.capo?'case '+etat.capo:'sans';
+  const bc=$('bandeauCapo');
+  if(etat.capo){bc.hidden=false;bc.innerHTML=`🎯 Pédagogie du capo : tu joues la <b>forme ${nomAccord(etat.root,etat.type)}</b>, mais avec le capo en case ${etat.capo} l'accord entendu est <b>${nomAccord(etat.root+etat.capo,etat.type)}</b>. Le capo remonte tout d'un demi-ton par case.`;}
+  else bc.hidden=true;
+  $('pedago').innerHTML=`<b>${def[1]}</b> — construit sur ${nomNote(etat.root)} avec les intervalles ${def[3].map(i=>NOM_INTERVALLE[i]||i).join(' · ')}. `+
+   (pos&&pos.label.startsWith('Barré')?'Pour un barré propre : pouce au milieu du manche, index légèrement roulé sur la tranche, et serre avec le bras plus qu\'avec la main.':'Laisse sonner les cordes à vide (○) et évite de gratter celles marquées ✕.');
+  rendNotes();rendTypes();rendFavs();
+  etat._pos=pos;
+}
+function toutRendre(){rendFiche();rendProgs();rendAccordeur();}
+
+/* ---------- événements ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button,.corde');if(!b)return;
+  if(b.dataset.r!==undefined){etat.root=+b.dataset.r;etat.pos=0;rendFiche();}
+  else if(b.dataset.t){etat.type=b.dataset.t;etat.pos=0;rendFiche();}
+  else if(b.dataset.p!==undefined){etat.pos=+b.dataset.p;rendFiche();}
+  else if(b.dataset.fr!==undefined){etat.root=+b.dataset.fr;etat.type=b.dataset.ft;etat.pos=0;rendFiche();}
+  else if(b.dataset.corde!==undefined){pince(+b.dataset.corde,0,audio().currentTime+0.02);}
+  else if(b.dataset.s!==undefined){const s=+b.dataset.s;if(etat._pos&&etat._pos.f[s]>=0)pince(s,etat._pos.f[s],audio().currentTime+0.02);}
+  else if(b.dataset.play!==undefined){joueProg(+b.dataset.play);}
+  else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}
+});
+$('jouerBas').onclick=()=>etat._pos&&joueAccord(etat._pos,'bas');
+$('jouerHaut').onclick=()=>etat._pos&&joueAccord(etat._pos,'haut');
+$('jouerArp').onclick=()=>etat._pos&&joueAccord(etat._pos,'arp');
+$('etoile').onclick=()=>{const i=favoris.findIndex(f=>f[0]===etat.root&&f[1]===etat.type);
+  if(i>=0)favoris.splice(i,1);else favoris.push([etat.root,etat.type]);sauveFavs();rendFiche();};
+$('capo').oninput=e=>{etat.capo=+e.target.value;cacheVide();rendFiche();};
+$('instrument').onchange=e=>{etat.instrument=e.target.value;cacheVide();};
+function cacheVide(){for(const k in cache)delete cache[k];}
+$('btnGaucher').onclick=e=>{etat.gaucher=!etat.gaucher;e.target.classList.toggle('actif');rendFiche();};
+$('btnNotation').onclick=e=>{etat.fr=!etat.fr;e.target.textContent=etat.fr?'Do Ré Mi':'C D E';toutRendre();};
+$('btnAccordeur').onclick=()=>$('zoneAccordeur').classList.toggle('ouvert');
+$('tempo').oninput=e=>{etat.tempo=+e.target.value;$('tempoVal').textContent=etat.tempo;};
+
+/* recherche : "Fa#m7", "Sib", "Cmaj7", "solm"… */
+$('recherche').addEventListener('input',e=>{
+  const v=e.target.value.trim().toLowerCase().replace(/♯/g,'#').replace(/♭/g,'b');
+  if(!v)return;
+  const m=v.match(/^(do|ré|re|mi|fa|sol|la|si|[a-g])\s*([#b]?)\s*(.*)$/);
+  if(!m)return;
+  const basesFR={do:0,'ré':2,re:2,mi:4,fa:5,sol:7,la:9,si:11};
+  const basesEN={c:0,d:2,e:4,f:5,g:7,a:9,b:11};
+  let r=basesFR[m[1]]!==undefined?basesFR[m[1]]:basesEN[m[1]];
+  if(r===undefined)return;
+  if(m[2]==='#')r=(r+1)%12; if(m[2]==='b')r=(r+11)%12;
+  const suf=m[3].replace(/\s/g,'');
+  let t='maj';
+  if(suf){
+    const cles=['m7b5','7sus4','maj7','dim7','sus2','sus4','add9','maj','min','dim','aug','m9','m7','m6','9','7','6','m'];
+    for(const k of cles){
+      if(suf===k){t=(k==='min')?'m':k;break;}
+      if(suf.startsWith(k)){t=(k==='min')?'m':k;break;}
+    }
+  }
+  if(!typeDef(t))t='maj';
+  etat.root=r;etat.type=t;etat.pos=0;rendFiche();
+});
+
+/* lecteur de progressions */
+let progEnCours=null;
+function joueProg(pi){
+  if(progEnCours)clearInterval(progEnCours);
+  const c=audio(),seq=PROGS[pi].seq,beat=60/etat.tempo;
+  const boutons=[...document.querySelectorAll(`#prog${pi} .btn`)];
+  let mesure=0;
+  const step=()=>{
+    boutons.forEach((b,i)=>b.classList.toggle('joue',i===mesure));
+    const [r,t]=seq[mesure];
+    const p=positions(r,t)[0];
+    if(p){const t0=c.currentTime+0.03;
+      for(let bt=0;bt<4;bt++){let tt=t0+bt*beat;
+        [0,1,2,3,4,5].filter(s=>p.f[s]>=0).forEach((s,i)=>{
+          const midi=MIDI_CORDES[s]+p.f[s]+etat.capo,fq=440*Math.pow(2,(midi-69)/12);
+          const src=c.createBufferSource();src.buffer=corde(fq);
+          const g=c.createGain();g.gain.value=bt===0?0.8:0.5;
+          src.connect(g).connect(c.destination);src.start(tt+i*0.04);
+        });}}
+    mesure++;
+    if(mesure>=seq.length){clearInterval(progEnCours);progEnCours=null;
+      setTimeout(()=>boutons.forEach(b=>b.classList.remove('joue')),4*beat*1000);}
+  };
+  step();
+  progEnCours=setInterval(step,4*beat*1000);
+}
+/* ================================================================
+   V2 — RECONNAISSANCE D'ACCORDS (chroma + gabarits)
+================================================================ */
+const DET_TYPES=[['maj',[0,4,7],[1,.85,.75]],['m',[0,3,7],[1,.85,.75]],['7',[0,4,7,10],[1,.8,.7,.65]],['m7',[0,3,7,10],[1,.8,.7,.65]]];
+const GABARITS=[];
+for(let r=0;r<12;r++)for(const[t,iv,w]of DET_TYPES){
+  const a=new Float32Array(12);iv.forEach((v,k)=>a[(v+r)%12]+=w[k]);
+  let n=0;for(const x of a)n+=x*x;n=Math.sqrt(n);
+  GABARITS.push({r,t,a,n});
+}
+function meilleurAccord(chroma){
+  let n=0;for(const x of chroma)n+=x*x;n=Math.sqrt(n);
+  if(!n)return null;
+  let best=null,s1=0,s2=0;
+  for(const g of GABARITS){let d=0;for(let i=0;i<12;i++)d+=chroma[i]*g.a[i];d/=(n*g.n);
+    if(d>s1){s2=s1;s1=d;best=g;}else if(d>s2)s2=d;}
+  return {r:best.r,t:best.t,score:s1,marge:s1-s2};
+}
+
+/* ---------- détecteur temps réel partagé (micro / onglet) ---------- */
+function demarreDetecteur(flux,surAccord,surNiveau){
+  const c=audio();
+  const src=c.createMediaStreamSource(flux);
+  const an=c.createAnalyser();an.fftSize=8192;an.smoothingTimeConstant=0.5;
+  src.connect(an);
+  const spec=new Float32Array(an.frequencyBinCount),temps=new Float32Array(an.fftSize);
+  const chroma=new Float32Array(12);let label=null,stable=0;const t0=c.currentTime;
+  const timer=setInterval(()=>{
+    an.getFloatTimeDomainData(temps);
+    let rms=0;for(const v of temps)rms+=v*v;rms=Math.sqrt(rms/temps.length);
+    if(surNiveau)surNiveau(rms);
+    an.getFloatFrequencyData(spec);
+    const ch=new Float32Array(12),sr=c.sampleRate,N=an.fftSize;
+    for(let i=1;i<spec.length;i++){const f=i*sr/N;if(f<65||f>1200)continue;
+      ch[((Math.round(69+12*Math.log2(f/440)))%12+12)%12]+=Math.pow(10,spec[i]/10);}
+    for(let i=0;i<12;i++)chroma[i]=0.6*chroma[i]+0.4*ch[i];
+    const t=c.currentTime-t0;
+    if(rms<0.008){label=null;stable=0;surAccord(null,0,t);return;}
+    const b=meilleurAccord(chroma);if(!b)return;
+    const l=b.r+'|'+b.t;
+    if(l===label)stable++;else{label=l;stable=0;}
+    if(stable===2)surAccord(b,b.score,t);
+  },120);
+  return ()=>{clearInterval(timer);flux.getTracks().forEach(tr=>tr.stop());};
+}
+
+/* ---------- l'Oreille (micro) ---------- */
+let micArret=null,micDernier=null;
+$('btnMicro').onclick=async()=>{
+  try{
+    const flux=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
+    $('histo').innerHTML='';$('btnMicro').hidden=true;$('btnMicroStop').hidden=false;
+    $('confiance').textContent='j\'écoute…';
+    micArret=demarreDetecteur(flux,(b,score,t)=>{
+      if(!b){$('accordDetecte').textContent='—';$('confiance').textContent='silence… joue plus fort ou rapproche la source';micDernier=null;return;}
+      micDernier=b;
+      $('accordDetecte').textContent=nomAccord(b.r,b.t);
+      $('confiance').textContent='confiance '+Math.round(score*100)+'% — touche le nom pour l\'ouvrir dans la fiche';
+      const d=$('histo').lastElementChild;
+      if(!d||d.dataset.fr!=String(b.r)||d.dataset.ft!==b.t){
+        const s=Math.round(t);
+        $('histo').insertAdjacentHTML('beforeend',`<button class="btn" data-fr="${b.r}" data-ft="${b.t}">${nomAccord(b.r,b.t)}<small style="color:inherit;opacity:.7"> ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}</small></button>`);
+      }
+    },rms=>$('vuBar').style.width=Math.min(100,rms*600)+'%');
+  }catch(err){$('confiance').textContent='Micro refusé ou indisponible : autorise le micro dans le navigateur.';}
+};
+$('btnMicroStop').onclick=()=>{
+  if(micArret)micArret();micArret=null;
+  $('btnMicro').hidden=false;$('btnMicroStop').hidden=true;
+  $('vuBar').style.width='0';$('confiance').textContent='écoute arrêtée — l\'historique reste affiché';
+};
+$('accordDetecte').style.cursor='pointer';
+$('accordDetecte').onclick=()=>{if(micDernier){etat.root=micDernier.r;etat.type=micDernier.t;etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}};
+
+/* ---------- v3 : vidéo YouTube → grille d'accords ---------- */
+let ytArret=null,ytSegs=[],ytEnCours=null,ytDernierT=0;
+$('btnYt').onclick=()=>{
+  const m=($('urlYt').value||'').match(/(?:youtube\.com\/(?:watch\?[^\s]*v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/);
+  if(!m){$('etatYt').textContent='Colle un lien YouTube valide (watch, youtu.be, shorts…).';return;}
+  $('cadreYt').innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" title="Vidéo YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  $('capYt').hidden=false;
+  $('etatYt').textContent='Lance la vidéo, puis choisis une méthode de capture ci-dessous.';
+};
+function finSegYt(t){
+  if(ytEnCours){ytEnCours.t1=t;if(ytEnCours.t1-ytEnCours.t0>=0.5)ytSegs.push(ytEnCours);ytEnCours=null;}
+}
+function demarreYt(flux,mode){
+  ytSegs=[];ytEnCours=null;ytDernierT=0;
+  $('btnYtStop').hidden=false;$('btnYtMicro').hidden=true;$('btnYtOnglet').hidden=true;
+  $('etatYt').textContent='Capture en cours ('+mode+') — la grille se construit en direct dans la section en dessous…';
+  $('capobar').hidden=false;$('lecteurAudio').hidden=true;grilleSource='yt';grilleCapo=0;$('capoGrille').value='0';
+  ytArret=demarreDetecteur(flux,(b,score,t)=>{
+    ytDernierT=t;
+    if(!b){finSegYt(t);grille=ytSegs.slice();rendGrille();return;}
+    if(!ytEnCours||ytEnCours.r!==b.r||ytEnCours.type!==b.t){finSegYt(t);ytEnCours={r:b.r,type:b.t,t0:t,t1:t};}
+    else ytEnCours.t1=t;
+    grille=ytSegs.concat([Object.assign({},ytEnCours)]);
+    rendGrille();
+  });
+}
+$('btnYtMicro').onclick=async()=>{
+  try{demarreYt(await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}),'micro');}
+  catch(e){$('etatYt').textContent='Micro refusé ou indisponible.';}
+};
+$('btnYtOnglet').onclick=async()=>{
+  try{
+    const flux=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+    if(!flux.getAudioTracks().length){
+      flux.getTracks().forEach(tr=>tr.stop());
+      $('etatYt').textContent='Aucun son capturé : choisis l\'onglet de la vidéo et coche « Partager aussi l\'audio de l\'onglet ».';
+      return;
+    }
+    demarreYt(flux,'son de l\'onglet');
+  }catch(e){$('etatYt').textContent='Capture non disponible ici (fonctionne sur Chrome ou Edge, sur ordinateur) — utilise le micro.';}
+};
+$('btnYtStop').onclick=()=>{
+  if(ytArret)ytArret();ytArret=null;
+  finSegYt(ytDernierT);
+  $('btnYtStop').hidden=true;$('btnYtMicro').hidden=false;$('btnYtOnglet').hidden=false;
+  grille=ytSegs.slice();grilleSource='yt';
+  rendGrille();
+  $('etatYt').textContent=grille.length+' accords extraits de la vidéo.';
+  $('etatAnalyse').textContent='Grille extraite de la vidéo YouTube ('+grille.length+' accords). Utilise « Meilleur capo » pour la simplifier, touche un accord pour l\'ouvrir dans la fiche.';
+};
+
+/* ---------- FFT (radix-2) pour l'analyse hors-ligne ---------- */
+function fft2(re,im){const n=re.length;
+  for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j|=bit;
+    if(i<j){const tr=re[i];re[i]=re[j];re[j]=tr;const ti=im[i];im[i]=im[j];im[j]=ti;}}
+  for(let len=2;len<=n;len<<=1){
+    const ang=-2*Math.PI/len,wr=Math.cos(ang),wi=Math.sin(ang);
+    for(let i=0;i<n;i+=len){let cr=1,ci=0;
+      for(let k=0;k<len/2;k++){
+        const a=i+k,b=i+k+len/2;
+        const vr=re[b]*cr-im[b]*ci,vi=re[b]*ci+im[b]*cr;
+        re[b]=re[a]-vr;im[b]=im[a]-vi;re[a]+=vr;im[a]+=vi;
+        const nc=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=nc;}}}
+}
+
+/* ---------- analyse d'un fichier : grille d'accords ---------- */
+let grille=[],grilleCapo=0,grilleSource='fichier';
+$('fichierAudio').onchange=async e=>{
+  const fich=e.target.files[0];if(!fich)return;
+  const et=$('etatAnalyse');et.textContent='Décodage de « '+fich.name+' »…';
+  try{
+    const c=audio();
+    const buf=await c.decodeAudioData(await fich.arrayBuffer());
+    et.textContent='Analyse harmonique en cours…';
+    await new Promise(r=>setTimeout(r,30));
+    const sr=buf.sampleRate,mono=new Float32Array(buf.length);
+    for(let ch=0;ch<buf.numberOfChannels;ch++){const d=buf.getChannelData(ch);
+      for(let i=0;i<d.length;i++)mono[i]+=d[i]/buf.numberOfChannels;}
+    const N=4096,hop=4096,hann=new Float32Array(N);
+    for(let i=0;i<N;i++)hann[i]=0.5-0.5*Math.cos(2*Math.PI*i/N);
+    const pc=new Int8Array(N/2);
+    for(let i=1;i<N/2;i++){const f=i*sr/N;pc[i]=(f<65||f>1200)?-1:((Math.round(69+12*Math.log2(f/440)))%12+12)%12;}
+    const re=new Float32Array(N),im=new Float32Array(N);
+    const frames=[];let eMax=0;
+    for(let off=0;off+N<=mono.length;off+=hop){
+      for(let i=0;i<N;i++){re[i]=mono[off+i]*hann[i];im[i]=0;}
+      fft2(re,im);
+      const ch=new Float32Array(12);let en=0;
+      for(let i=1;i<N/2;i++){if(pc[i]<0)continue;const m=re[i]*re[i]+im[i]*im[i];ch[pc[i]]+=m;en+=m;}
+      if(en>eMax)eMax=en;
+      frames.push({t:off/sr,ch,en});
+      if(frames.length%400===0)await new Promise(r=>setTimeout(r,0));
+    }
+    const seuil=eMax*0.004;
+    const labels=frames.map(f=>{if(f.en<seuil)return null;const b=meilleurAccord(f.ch);return b&&b.score>0.5?b:null;});
+    for(let i=1;i<labels.length-1;i++){ // un frame isolé rejoint ses voisins identiques
+      const a=labels[i-1],b=labels[i],c2=labels[i+1];
+      if(a&&c2&&a.r===c2.r&&a.t===c2.t&&(!b||b.r!==a.r||b.t!==a.t))labels[i]=a;
+    }
+    grille=[];
+    const dureeFrame=N/sr;
+    for(let i=0;i<labels.length;i++){
+      const l=labels[i];if(!l)continue;
+      const prev=grille[grille.length-1];
+      if(prev&&prev.r===l.r&&prev.type===l.t&&frames[i].t-prev.t1<0.2)prev.t1=frames[i].t+dureeFrame;
+      else grille.push({r:l.r,type:l.t,t0:frames[i].t,t1:frames[i].t+dureeFrame});
+    }
+    grille=grille.filter(s=>s.t1-s.t0>=0.4);
+    for(let i=grille.length-2;i>=0;i--){ // fusion des segments identiques séparés d'une miette
+      if(grille[i+1]&&grille[i].r===grille[i+1].r&&grille[i].type===grille[i+1].type&&grille[i+1].t0-grille[i].t1<0.6){
+        grille[i].t1=grille[i+1].t1;grille.splice(i+1,1);}
+    }
+    if(!grille.length){et.textContent='Je n\'ai pas réussi à isoler d\'accords nets dans ce fichier — essaie une version plus acoustique du morceau.';return;}
+    et.textContent=grille.length+' accords détectés sur '+Math.round(buf.duration)+' s. Touche un accord pour te placer dans le morceau et l\'ouvrir dans la fiche.';
+    grilleSource='fichier';
+    const la=$('lecteurAudio');la.src=URL.createObjectURL(fich);la.hidden=false;
+    $('capobar').hidden=false;grilleCapo=0;$('capoGrille').value='0';$('capoInfo').textContent='';
+    rendGrille();
+  }catch(err){et.textContent='Impossible de lire ce fichier audio ('+err.message+').';}
+};
+const fmtT=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
+const SIMPLIF={'7':'maj','m7':'m'};
+function rendGrille(){
+  const simp=$('simplif').checked;
+  $('timeline').innerHTML=grille.map((s,i)=>{
+    const ty=simp?(SIMPLIF[s.type]||s.type):s.type;
+    const forme=((s.r-grilleCapo)%12+12)%12;
+    return `<button class="bloc" data-g="${i}">${nomAccord(forme,ty)}<small>${fmtT(s.t0)}</small></button>`;
+  }).join('');
+  if(grilleCapo>0){
+    const simp2=$('simplif').checked;
+    const ouverts=grille.filter(s=>OUVERTS[(((s.r-grilleCapo)%12+12)%12)+'|'+(simp2?(SIMPLIF[s.type]||s.type):s.type)]).length;
+    $('capoInfo').textContent='Capo '+grilleCapo+' : formes jouées affichées ('+Math.round(100*ouverts/grille.length)+'% en position ouverte). L\'accord réel sonne '+grilleCapo+' demi-ton'+(grilleCapo>1?'s':'')+' plus haut.';
+  }else $('capoInfo').textContent='';
+}
+$('capoGrille').onchange=e=>{grilleCapo=+e.target.value;rendGrille();};
+$('simplif').onchange=rendGrille;
+$('btnCapoMalin').onclick=()=>{
+  if(!grille.length)return;
+  let best=0,bestScore=-1;
+  for(let cpo=0;cpo<=9;cpo++){
+    let sc=0;
+    for(const s of grille){
+      const ty=SIMPLIF[s.type]||s.type;
+      if(OUVERTS[(((s.r-cpo)%12+12)%12)+'|'+ty])sc+=(s.t1-s.t0);
+    }
+    sc-=cpo*0.15; // à score égal, préférer le capo le plus bas
+    if(sc>bestScore){bestScore=sc;best=cpo;}
+  }
+  grilleCapo=best;$('capoGrille').value=String(best);rendGrille();
+};
+$('timeline').addEventListener('click',e=>{
+  const b=e.target.closest('.bloc');if(!b)return;
+  const s=grille[+b.dataset.g];if(!s)return;
+  if(grilleSource==='fichier'){const la=$('lecteurAudio');la.currentTime=s.t0;la.play();}
+  const ty=$('simplif').checked?(SIMPLIF[s.type]||s.type):s.type;
+  etat.root=((s.r-grilleCapo)%12+12)%12;etat.type=ty;etat.capo=grilleCapo;$('capo').value=grilleCapo;etat.pos=0;rendFiche();
+});
+$('lecteurAudio').addEventListener('timeupdate',e=>{
+  const t=e.target.currentTime;
+  document.querySelectorAll('#timeline .bloc').forEach((b,i)=>{
+    const s=grille[i];b.classList.toggle('actif',s&&t>=s.t0&&t<s.t1);
+  });
+});
+
+/* ---------- capo malin sur la fiche accord ---------- */
+$('btnCapoFiche').onclick=()=>{
+  const cible=((etat.root+etat.capo)%12+12)%12; // accord réellement entendu
+  for(let cpo=0;cpo<=9;cpo++){
+    const forme=((cible-cpo)%12+12)%12;
+    if(OUVERTS[forme+'|'+etat.type]){
+      etat.capo=cpo;$('capo').value=cpo;etat.root=forme;etat.pos=0;rendFiche();return;
+    }
+  }
+  $('pedago').innerHTML='<b>Capo malin :</b> pas de position ouverte répertoriée pour ce type d\'accord — reste sur le barré, ou simplifie le type (7 → majeur, m7 → mineur).';
+};
+
+toutRendre();</script>
+<script>
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
