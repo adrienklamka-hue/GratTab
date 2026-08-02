@@ -297,8 +297,9 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
       <span>Capodastre</span>
       <input type="range" id="capo" min="0" max="9" value="0" aria-label="Position du capodastre">
       <b id="capoVal">sans</b>
-      <button class="btn" id="btnCapoFiche" title="Trouver le capo qui rend cet accord jouable en position ouverte">🪄 Capo malin</button>
+      <button class="btn" id="btnCapoFiche" title="Trouver le capo qui rend cet accord facile à jouer">🪄 Rendre facile</button>
     </div>
+    <div class="astuce" style="text-align:left;margin-top:6px">🪄 <b>Rendre facile</b> : place le capo au bon endroit pour remplacer un barré par une forme ouverte simple — l'accord entendu reste le même.</div>
     <div class="bandeau-capo" id="bandeauCapo" hidden></div>
     <div class="pedago" id="pedago"></div>
   </section>
@@ -361,7 +362,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
     <span>Capo
       <select id="capoGrille"><option value="0">sans</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
     </span>
-    <button class="btn" id="btnCapoMalin">🪄 Meilleur capo</button>
+    <button class="btn" id="btnCapoMalin" title="Choisit le capo qui rend le plus d'accords faciles">🪄 Tout rendre facile</button>
     <label><input type="checkbox" id="simplif"> Accords simplifiés</label>
     <span class="vide" id="capoInfo"></span>
   </div>
@@ -1102,7 +1103,7 @@ function rendGrille(){
   }).join('');
   if(grilleCapo>0){
     const simp2=$('simplif').checked;
-    const ouverts=grille.filter(s=>OUVERTS[(((s.r-grilleCapo)%12+12)%12)+'|'+(simp2?(SIMPLIF[s.type]||s.type):s.type)]).length;
+    const ouverts=grille.filter(s=>estFacile(s.r-grilleCapo,simp2?(SIMPLIF[s.type]||s.type):s.type)).length;
     $('capoInfo').textContent='Capo '+grilleCapo+' : formes jouées affichées ('+Math.round(100*ouverts/grille.length)+'% en position ouverte). L\'accord réel sonne '+grilleCapo+' demi-ton'+(grilleCapo>1?'s':'')+' plus haut.';
   }else $('capoInfo').textContent='';
   $('zoneSauve').hidden=!grille.length;
@@ -1117,7 +1118,7 @@ $('btnCapoMalin').onclick=()=>{
     let sc=0;
     for(const s of grille){
       const ty=SIMPLIF[s.type]||s.type;
-      if(OUVERTS[(((s.r-cpo)%12+12)%12)+'|'+ty])sc+=(s.t1-s.t0);
+      if(estFacile(s.r-cpo,ty))sc+=(s.t1-s.t0);
     }
     sc-=cpo*0.15; // à score égal, préférer le capo le plus bas
     if(sc>bestScore){bestScore=sc;best=cpo;}
@@ -1139,15 +1140,29 @@ $('lecteurAudio').addEventListener('timeupdate',e=>{
 });
 
 /* ---------- capo malin sur la fiche accord ---------- */
+/* Formes vraiment faciles : positions ouvertes sans barré, celles qu'on apprend en premier */
+const FACILES=['0|maj','0|7','0|maj7','0|add9','9|maj','9|m','9|7','9|m7','9|maj7','9|sus2','9|sus4','9|6','9|m6',
+ '7|maj','7|7','7|6','7|add9','4|maj','4|m','4|7','4|m7','4|maj7','4|sus4','4|add9',
+ '2|maj','2|m','2|7','2|m7','2|maj7','2|sus2','2|sus4','2|6','2|m6','11|7'];
+const estFacile=(r,t)=>FACILES.indexOf((((r%12)+12)%12)+'|'+t)>=0;
+
 $('btnCapoFiche').onclick=()=>{
-  const cible=((etat.root+etat.capo)%12+12)%12; // accord réellement entendu
-  for(let cpo=0;cpo<=9;cpo++){
+  const cible=((etat.root+etat.capo)%12+12)%12;       // accord réellement entendu
+  const nomCible=nomAccord(cible,etat.type);
+  // déjà facile sans capo ? on le dit clairement
+  if(etat.capo===0&&estFacile(etat.root,etat.type)){
+    $('pedago').innerHTML='<b>🪄 Rendre facile :</b> bonne nouvelle, <b>'+nomCible+'</b> est déjà une position ouverte simple — pas besoin de capo ici. Essaie sur un accord barré (Fa, Si♭, Fa#m…) pour voir la magie opérer.';
+    return;
+  }
+  for(let cpo=1;cpo<=9;cpo++){
     const forme=((cible-cpo)%12+12)%12;
-    if(OUVERTS[forme+'|'+etat.type]){
-      etat.capo=cpo;$('capo').value=cpo;etat.root=forme;etat.pos=0;rendFiche();return;
+    if(estFacile(forme,etat.type)){
+      etat.capo=cpo;$('capo').value=cpo;etat.root=forme;etat.pos=0;rendFiche();
+      $('pedago').innerHTML='<b>🪄 Rendre facile :</b> pose ton capo en <b>case '+cpo+'</b> et joue la forme <b>'+nomAccord(forme,etat.type)+'</b> (position ouverte). Ce que tout le monde entend : <b>'+nomCible+'</b>, exactement comme le barré.';
+      return;
     }
   }
-  $('pedago').innerHTML='<b>Capo malin :</b> pas de position ouverte répertoriée pour ce type d\'accord — reste sur le barré, ou simplifie le type (7 → majeur, m7 → mineur).';
+  $('pedago').innerHTML='<b>🪄 Rendre facile :</b> aucun capo ne rend <b>'+nomCible+'</b> simple avec ce type d\'accord. Deux options : garder le barré, ou simplifier la couleur (un 7 se remplace souvent par un majeur, un m7 par un mineur).';
 };
 
 /* ================================================================
