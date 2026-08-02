@@ -9,6 +9,7 @@ Application web complète, sans aucune dépendance externe, qui fonctionne hors-
 - **Écoute** : synthèse de corde pincée dans le navigateur — 3 timbres (classique nylon, électro-acoustique, électrique), gratté, arpège, note par note
 - **Capodastre** 0–9 avec pédagogie de transposition, et **Capo malin** qui transforme un accord difficile en forme ouverte
 - **L'Oreille** : reconnaissance des accords au micro, en direct, avec historique
+- **Chord Hero (Jam noté)** : l'appli t'écoute jouer une grille et note ta précision — points, combos, record
 - **Mode Live YouTube** : la vidéo joue dans l'appli et l'accord à jouer s'affiche en direct, en grand, avec son diagramme
 - **Grille d'un morceau** : charge un fichier audio, l'appli extrait la grille d'accords synchronisée à la lecture (façon Chordify), avec meilleur capo et accords simplifiés
 - Mode gaucher, notation Do Ré Mi ↔ C D E, recherche, favoris, progressions pédagogiques, **accordeur à aiguille** (micro) avec sons de référence

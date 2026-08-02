@@ -137,6 +137,21 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .live-txt{display:flex;flex-direction:column;gap:4px;align-items:center}
 .live-diag{width:128px;flex:none}
 .live-diag svg{width:100%;display:block}
+/* ---------- v7 : Chord Hero ---------- */
+.jam-hud{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:10px 0;font-weight:700}
+.jam-hud span{background:var(--panel2);border:2px solid var(--ligne);border-radius:999px;padding:6px 14px}
+.jam-hud b{color:var(--laiton-vif)}
+.jam-barre{height:12px;background:var(--panel2);border-radius:6px;overflow:hidden;margin:8px 0;border:2px solid var(--ligne)}
+.jam-barre i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ok),var(--laiton-vif))}
+.jam-cible{display:flex;align-items:center;justify-content:center;gap:18px;padding:12px;background:var(--panel2);border:2px solid var(--laiton);border-radius:18px;box-shadow:4px 4px 0 rgba(0,0,0,.25)}
+.jam-nom{font-size:3.4rem;font-weight:900;line-height:1;color:var(--ivoire);text-shadow:3px 3px 0 rgba(239,125,114,.5)}
+.jam-retour{text-align:center;font-size:1.3rem;font-weight:800;min-height:1.6em;margin-top:8px}
+#jamScene{position:relative;overflow:hidden}
+.conf{position:absolute;top:-16px;width:10px;height:15px;border-radius:3px;animation:chute 1.1s ease-in forwards;z-index:5}
+@keyframes chute{to{transform:translateY(320px) rotate(540deg);opacity:0}}
+.jam-fin{text-align:center;padding:14px;background:var(--panel2);border:2px solid var(--laiton);border-radius:18px;margin-top:10px}
+.jam-fin .etoiles{font-size:2.2rem;letter-spacing:.15em}
+.jam-fin .gros{font-size:2.4rem;font-weight:900;color:var(--laiton-vif)}
 .yt-cadre iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
 .fichier{color:var(--texte2);font-size:.9rem;margin-top:8px}
 input[type=file]{color:var(--texte2)}
@@ -281,6 +296,31 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
     <span class="vide" id="capoInfo"></span>
   </div>
   <div class="timeline" id="timeline"></div>
+</section>
+
+<!-- ======= v7 : Chord Hero ======= -->
+<section class="carte progs" id="secJam">
+  <h2>Chord Hero — le Jam noté <span>l'appli t'écoute jouer</span></h2>
+  <p class="vide">Charge une grille (Mode Live YouTube ou fichier) ou lance un enchaînement avec son bouton 🎮, puis plaque chaque accord avant la fin du temps : l'appli t'écoute au micro, valide, et compte points, combos et record.</p>
+  <div class="tempo">Temps par accord <input type="range" id="jamTemps" min="2" max="6" step="0.5" value="4"> <b id="jamTempsVal">4 s</b></div>
+  <div class="lecture" style="justify-content:flex-start">
+    <button class="btn principal" id="btnJamGrille">🎮 Jouer la grille actuelle</button>
+    <button class="btn" id="btnJamStop" hidden>■ Arrêter</button>
+  </div>
+  <div id="jamScene" hidden>
+    <div class="jam-hud">
+      <span>Score <b id="jamScore">0</b></span>
+      <span>Combo <b id="jamCombo">×1</b></span>
+      <span>Accord <b id="jamProg">1/1</b></span>
+    </div>
+    <div class="jam-barre"><i id="jamBarre"></i></div>
+    <div class="jam-cible">
+      <div class="jam-nom display" id="jamNom">—</div>
+      <div class="live-diag" id="jamDiag"></div>
+    </div>
+    <div class="jam-retour" id="jamRetour"></div>
+  </div>
+  <div id="jamFin" hidden></div>
 </section>
 
 <footer>Grat’Tab — développé par TchoPolo 🧡 accords ouverts, barrés &amp; capo · sons générés dans le navigateur, aucune connexion requise.</footer>
@@ -509,6 +549,7 @@ function rendProgs(){
     <div><div class="nom">${p.nom}</div><div class="vide">${p.info}</div></div>
     <div class="accords" id="prog${pi}">${p.seq.map((a,ai)=>`<button class="btn" data-pi="${pi}" data-ai="${ai}">${nomAccord(a[0],a[1])}</button>`).join('')}</div>
     <button class="btn principal" data-play="${pi}">▶ Écouter</button>
+    <button class="btn" data-jam="${pi}" title="Jouer cet enchaînement en Jam noté">🎮</button>
   </div>`).join('');
 }
 function rendAccordeur(){
@@ -632,6 +673,7 @@ document.addEventListener('click',e=>{
   else if(b.dataset.corde!==undefined){pince(+b.dataset.corde,0,audio().currentTime+0.02);}
   else if(b.dataset.s!==undefined){const s=+b.dataset.s;if(etat._pos&&etat._pos.f[s]>=0)pince(s,etat._pos.f[s],audio().currentTime+0.02);}
   else if(b.dataset.play!==undefined){joueProg(+b.dataset.play);}
+  else if(b.dataset.jam!==undefined){lanceJam(PROGS[+b.dataset.jam].seq.map(a=>({r:a[0],type:a[1]})));document.getElementById('secJam').scrollIntoView({behavior:'smooth'});}
   else if(b.dataset.pi!==undefined){const a=PROGS[+b.dataset.pi].seq[+b.dataset.ai];etat.root=a[0];etat.type=a[1];etat.pos=0;rendFiche();window.scrollTo({top:0,behavior:'smooth'});}
 });
 $('jouerBas').onclick=()=>etat._pos&&joueAccord(etat._pos,'bas');
@@ -964,6 +1006,119 @@ $('btnCapoFiche').onclick=()=>{
   }
   $('pedago').innerHTML='<b>Capo malin :</b> pas de position ouverte répertoriée pour ce type d\'accord — reste sur le barré, ou simplifie le type (7 → majeur, m7 → mineur).';
 };
+
+/* ================================================================
+   V7 — CHORD HERO : jam noté à l'oreille
+================================================================ */
+const JAM_MAP={maj:'maj',m:'m','7':'7',m7:'m7',maj7:'maj',sus2:'maj',sus4:'maj','7sus4':'7','6':'maj',m6:'m',add9:'maj','9':'7',m9:'m7',dim:'m',dim7:'m',aug:'maj',m7b5:'m7'};
+const JAM_FAMILLE={maj:'M','7':'M',m:'m',m7:'m'};
+let jamArret=null,jamChrono=null,jamEtat=null,jamRecord=0;
+try{jamRecord=parseInt(localStorage.getItem('grattab-jam-record')||'0')}catch(e){}
+$('jamTemps').oninput=e=>$('jamTempsVal').textContent=e.target.value+' s';
+
+function confettis(n){
+  const sc=$('jamScene'),cols=['#ef7d72','#ffc94b','#54c98f','#f7eed9'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('span');s.className='conf';
+    s.style.left=(5+Math.random()*90)+'%';
+    s.style.background=cols[i%cols.length];
+    s.style.animationDelay=(Math.random()*0.25)+'s';
+    sc.appendChild(s);setTimeout(()=>s.remove(),1400);
+  }
+}
+function lanceJam(seq){
+  if(jamArret){arreteJam();return;}
+  seq=(seq||[]).slice(0,32);
+  if(!seq.length){$('jamRetour').textContent='';$('jamFin').hidden=true;$('jamScene').hidden=true;
+    alert('Charge d\'abord une grille (Mode Live YouTube ou fichier), ou lance un enchaînement avec son bouton 🎮.');return;}
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}).then(flux=>{
+    jamEtat={seq,i:0,score:0,combo:0,meilleurCombo:0,reussis:0,bloque:true};
+    $('jamScene').hidden=false;$('jamFin').hidden=true;
+    $('btnJamStop').hidden=false;$('btnJamGrille').textContent='🎮 En cours…';
+    gardeEcran(true);
+    jamArret=demarreDetecteur(flux,b=>{
+      if(!b||!jamEtat||jamEtat.bloque)return;
+      const cible=jamEtat.seq[jamEtat.i];
+      const attendu=JAM_MAP[cible.type]||'maj';
+      if(b.r===cible.r&&JAM_FAMILLE[b.t]===JAM_FAMILLE[attendu])jamTouche();
+    });
+    jamAffiche();jamFenetre();
+  }).catch(()=>alert('Micro refusé : autorise-le pour jouer au Jam noté.'));
+}
+function jamAffiche(){
+  const c=jamEtat.seq[jamEtat.i];
+  $('jamNom').textContent=nomAccord(c.r,c.type);
+  const p=positions(c.r,c.type)[0];
+  $('jamDiag').innerHTML=p?dessine(p).replace(/class="corde"/g,'class="cordeL"'):'';
+  $('jamProg').textContent=(jamEtat.i+1)+'/'+jamEtat.seq.length;
+  $('jamScore').textContent=jamEtat.score;
+  $('jamCombo').textContent='×'+(1+Math.min(jamEtat.combo,6)*0.5).toFixed(1).replace('.0','');
+}
+function jamFenetre(){
+  const duree=parseFloat($('jamTemps').value)*1000,debut=Date.now();
+  jamEtat.bloque=true;setTimeout(()=>{if(jamEtat)jamEtat.bloque=false;},350); // petit délai anti-écho
+  if(jamChrono)clearInterval(jamChrono);
+  jamChrono=setInterval(()=>{
+    if(!jamEtat){clearInterval(jamChrono);return;}
+    const reste=1-(Date.now()-debut)/duree;
+    $('jamBarre').style.width=Math.max(0,reste*100)+'%';
+    if(reste<=0)jamRate();
+  },80);
+}
+function jamTouche(){
+  jamEtat.bloque=true;
+  const mult=1+Math.min(jamEtat.combo,6)*0.5;
+  jamEtat.score+=Math.round(100*mult);
+  jamEtat.combo++;jamEtat.reussis++;
+  jamEtat.meilleurCombo=Math.max(jamEtat.meilleurCombo,jamEtat.combo);
+  $('jamRetour').textContent=['🔥 Parfait !','⚡ Enchaîné !','🎯 Dans le mille !','🧡 Ça groove !'][jamEtat.combo%4];
+  $('jamRetour').style.color='#54c98f';
+  if(jamEtat.combo%4===0)confettis(24);
+  jamSuivant();
+}
+function jamRate(){
+  jamEtat.combo=0;
+  $('jamRetour').textContent='💤 Raté… accroche-toi !';
+  $('jamRetour').style.color='#ff6b5e';
+  jamSuivant();
+}
+function jamSuivant(){
+  jamEtat.i++;
+  if(jamEtat.i>=jamEtat.seq.length){jamFinPartie();return;}
+  jamAffiche();jamFenetre();
+}
+function jamFinPartie(){
+  clearInterval(jamChrono);jamChrono=null;
+  if(jamArret)jamArret();jamArret=null;gardeEcran(false);
+  const e=jamEtat;jamEtat=null;
+  const prec=Math.round(100*e.reussis/e.seq.length);
+  const etoiles=prec>=90?'★★★':prec>=60?'★★☆':prec>=30?'★☆☆':'☆☆☆';
+  let record='';
+  if(e.score>jamRecord){jamRecord=e.score;record='🏆 Nouveau record !';
+    try{localStorage.setItem('grattab-jam-record',String(jamRecord))}catch(err){}}
+  else if(jamRecord)record='Record à battre : '+jamRecord;
+  $('jamScene').hidden=true;$('btnJamStop').hidden=true;$('btnJamGrille').textContent='🎮 Jouer la grille actuelle';
+  $('jamFin').hidden=false;
+  $('jamFin').innerHTML=`<div class="jam-fin">
+    <div class="etoiles">${etoiles}</div>
+    <div class="gros">${e.score} pts</div>
+    <div>${e.reussis}/${e.seq.length} accords réussis (${prec}%) · meilleur combo ×${(1+Math.min(e.meilleurCombo,6)*0.5).toFixed(1).replace('.0','')}</div>
+    <div style="margin:6px 0;color:#ffc94b;font-weight:700">${record}</div>
+    <button class="btn principal" id="btnRejam">↻ Rejouer</button>
+  </div>`;
+  document.getElementById('btnRejam').onclick=()=>lanceJam(dernierJamSeq);
+}
+let dernierJamSeq=[];
+function arreteJam(){
+  if(jamChrono)clearInterval(jamChrono);jamChrono=null;
+  if(jamArret)jamArret();jamArret=null;gardeEcran(false);
+  jamEtat=null;$('jamScene').hidden=true;$('btnJamStop').hidden=true;
+  $('btnJamGrille').textContent='🎮 Jouer la grille actuelle';
+}
+const _lanceJam=lanceJam;
+lanceJam=function(seq){dernierJamSeq=(seq||[]).slice();_lanceJam(seq);};
+$('btnJamGrille').onclick=()=>lanceJam(grille.map(s=>({r:s.r,type:s.type})));
+$('btnJamStop').onclick=arreteJam;
 
 toutRendre();</script>
 <script>
