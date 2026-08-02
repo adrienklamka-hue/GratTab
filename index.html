@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Grat'Tab — Dictionnaire d'accords de guitare</title>
 <meta name="description" content="Tous les accords de guitare : positions ouvertes, barrés, capo, avec écoute des notes. Classique, électro-acoustique, électrique.">
-<meta name="theme-color" content="#191008">
+<meta name="theme-color" content="#1d2447">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,9 +15,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#191008; --panel:#241710; --panel2:#2f1f13; --ligne:#3f2b1a;
-  --laiton:#c9924b; --laiton-vif:#e8b563; --ivoire:#f2e7d5;
-  --texte:#f2e7d5; --texte2:#b39b7d; --rouge:#c66a52; --ok:#8fae6f;
+  --bg:#1d2447; --panel:#273059; --panel2:#313b6e; --ligne:#3d4a85;
+  --laiton:#ef7d72; --laiton-vif:#ffc94b; --ivoire:#f7eed9;
+  --texte:#f7eed9; --texte2:#aab3dc; --rouge:#ff6b5e; --ok:#54c98f;
   --rayon:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -26,32 +26,35 @@ body{
   background:var(--bg); color:var(--texte);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   line-height:1.5; min-height:100vh;
-  background-image:radial-gradient(ellipse 900px 500px at 50% -100px, #2a1a0e 0%, var(--bg) 70%);
+  background-image:radial-gradient(circle at 12% 8%, rgba(255,201,75,.14) 0 90px, transparent 90px),radial-gradient(circle at 88% 4%, rgba(239,125,114,.16) 0 110px, transparent 110px),radial-gradient(ellipse 900px 500px at 50% -100px, #283472 0%, var(--bg) 70%);
 }
 h1,h2,h3,.display{font-family:"Fraunces",Georgia,serif}
 .wrap{max-width:1100px;margin:0 auto;padding:16px 14px 60px}
 
 /* ---------- entête ---------- */
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:10px 0 18px}
-.marque{display:flex;align-items:center;gap:12px}
-.rosace{width:44px;height:44px;border-radius:50%;border:3px solid var(--laiton);
-  background:repeating-conic-gradient(from 0deg,var(--laiton) 0 6deg,transparent 6deg 14deg);
-  box-shadow:inset 0 0 0 6px var(--bg), inset 0 0 0 8px var(--laiton);flex:none}
-.marque h1{font-size:1.7rem;font-weight:700;letter-spacing:.5px}
-.marque small{display:block;color:var(--texte2);font-family:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.marque{display:flex;align-items:center;gap:10px}
+.logo-tete{width:46px;height:70px;flex:none;transform:rotate(-6deg)}
+.etincelles{width:26px;height:54px;flex:none}
+.logo-texte h1{font-size:2.15rem;font-weight:900;line-height:.9;letter-spacing:.5px}
+.grat{color:var(--ivoire);display:inline-block;transform:rotate(-2.5deg)}
+.tab{color:var(--laiton);display:inline-block;transform:rotate(2deg) translateY(3px);margin-left:2px}
+.ruban{display:inline-block;margin-top:7px;background:var(--laiton);color:#1d2447;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 12px;border-radius:4px;transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.ruban b{font-weight:800}
 .outils{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 select,button,input[type=text]{font:inherit;color:var(--texte)}
 select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:8px 10px}
-.btn{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px;padding:8px 12px;cursor:pointer;transition:.15s}
+.btn{background:var(--panel2);border:2px solid var(--ligne);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s;font-weight:600}
+.btn:active{transform:translateY(1px)}
 .btn:hover{border-color:var(--laiton)}
-.btn.actif{background:var(--laiton);color:#241407;border-color:var(--laiton);font-weight:600}
+.btn.actif{background:var(--laiton);color:#1d2447;border-color:var(--laiton);box-shadow:3px 3px 0 rgba(0,0,0,.28)}
 .btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--laiton-vif);outline-offset:2px}
 
 /* ---------- disposition ---------- */
 .grille{display:grid;grid-template-columns:340px 1fr;gap:18px}
 @media(max-width:860px){.grille{grid-template-columns:1fr}}
-.carte{background:var(--panel);border:1px solid var(--ligne);border-radius:var(--rayon);padding:16px}
-.carte h2{font-size:1.05rem;margin-bottom:10px;color:var(--laiton-vif)}
+.carte{background:var(--panel);border:2px solid var(--ligne);border-radius:20px;padding:16px;box-shadow:5px 6px 0 rgba(0,0,0,.22)}
+.carte h2{font-size:1.15rem;font-weight:900;margin-bottom:10px;color:var(--laiton-vif);display:inline-block;padding-bottom:2px;border-bottom:4px solid var(--laiton);border-radius:2px;transform:rotate(-.6deg)}
 .carte h2 span{color:var(--texte2);font-family:-apple-system,sans-serif;font-size:.72rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-left:8px}
 
 /* sélecteurs de notes / types */
@@ -67,12 +70,12 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 
 /* ---------- fiche accord ---------- */
 .entete-accord{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.nom-accord{font-size:2.4rem;font-weight:700;line-height:1}
+.nom-accord{font-size:2.6rem;font-weight:900;line-height:1;color:var(--ivoire);text-shadow:3px 3px 0 rgba(239,125,114,.45)}
 .nom-reel{color:var(--laiton-vif);font-size:1rem}
 .etoile{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--ligne);line-height:1}
 .etoile.actif{color:var(--laiton-vif)}
 .compo{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
-.jeton{background:var(--panel2);border:1px solid var(--ligne);border-radius:999px;padding:4px 12px;font-size:.85rem}
+.jeton{background:var(--panel2);border:2px solid var(--ligne);border-radius:999px;padding:4px 12px;font-size:.85rem}
 .jeton b{color:var(--laiton-vif)}
 .jeton small{color:var(--texte2);margin-left:6px}
 
@@ -86,14 +89,14 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 @keyframes vib{0%,100%{transform:translateX(0)}20%{transform:translateX(1.6px)}40%{transform:translateX(-1.4px)}60%{transform:translateX(1px)}80%{transform:translateX(-.6px)}}
 .lecture{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .lecture .btn{padding:10px 16px;font-weight:600}
-.lecture .principal{background:var(--laiton);color:#241407;border-color:var(--laiton)}
+.lecture .principal{background:var(--laiton);color:#1d2447;border-color:var(--laiton)}
 .astuce{color:var(--texte2);font-size:.8rem;text-align:center}
 
 /* capo */
 .capo{display:flex;align-items:center;gap:12px;margin-top:16px;background:var(--panel2);border-radius:10px;padding:10px 14px}
 .capo input[type=range]{flex:1;accent-color:var(--laiton)}
 .capo b{min-width:70px;text-align:center}
-.bandeau-capo{margin-top:8px;background:linear-gradient(90deg,#3a2814,#2f1f13);border:1px solid var(--laiton);border-radius:10px;padding:8px 14px;font-size:.9rem}
+.bandeau-capo{margin-top:8px;background:linear-gradient(90deg,#3a4787,#313b6e);border:1px solid var(--laiton);border-radius:10px;padding:8px 14px;font-size:.9rem}
 .bandeau-capo b{color:var(--laiton-vif)}
 
 /* pédagogie */
@@ -106,7 +109,7 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .prog .nom{font-weight:600;min-width:150px}
 .prog .accords{display:flex;flex-wrap:wrap;gap:6px}
 .prog .accords .btn{font-size:.85rem;padding:5px 10px}
-.prog .accords .btn.joue{background:var(--laiton);color:#241407;border-color:var(--laiton)}
+.prog .accords .btn.joue{background:var(--laiton);color:#1d2447;border-color:var(--laiton)}
 .tempo{display:flex;align-items:center;gap:10px;margin:8px 0 14px;color:var(--texte2);font-size:.9rem}
 .tempo input{accent-color:var(--laiton)}
 
@@ -120,18 +123,18 @@ select{background:var(--panel2);border:1px solid var(--ligne);border-radius:10px
 .vu i{display:block;height:100%;width:0;background:var(--laiton);transition:width .12s}
 .historique{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .timeline{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
-.bloc{background:var(--panel2);border:1px solid var(--ligne);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.92rem;min-width:58px;text-align:center}
+.bloc{background:var(--panel2);border:2px solid var(--ligne);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.92rem;min-width:58px;text-align:center}
 .bloc small{display:block;color:var(--texte2);font-size:.66rem}
-.bloc.actif{background:var(--laiton);color:#241407;border-color:var(--laiton)}
-.bloc.actif small{color:#241407}
+.bloc.actif{background:var(--laiton);color:#1d2447;border-color:var(--laiton)}
+.bloc.actif small{color:#1d2447}
 .capobar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;background:var(--panel2);padding:10px 12px;border-radius:10px;font-size:.9rem}
 .capobar label{display:flex;gap:6px;align-items:center;color:var(--texte2)}
-.btn.principal{background:var(--laiton);color:#241407;border-color:var(--laiton);font-weight:600}
+.btn.principal{background:var(--laiton);color:#1d2447;border-color:var(--laiton);font-weight:600}
 .yt-cadre{margin-top:8px}
 .yt-cadre iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
 .fichier{color:var(--texte2);font-size:.9rem;margin-top:8px}
 input[type=file]{color:var(--texte2)}
-input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#241407;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
+input[type=file]::file-selector-button{font:inherit;background:var(--laiton);color:#1d2447;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;margin-right:10px}
 
 footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 </style>
@@ -141,11 +144,20 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
 
 <header>
   <div class="marque">
-    <div class="rosace" aria-hidden="true"></div>
-    <div>
-      <h1>Grat&rsquo;Tab</h1>
-      <small>Dictionnaire d'accords · guitare</small>
+    <svg class="logo-tete" viewBox="0 0 64 96" aria-hidden="true">
+      <rect x="14" y="4" width="36" height="62" rx="10" fill="#ef7d72"/>
+      <path d="M32 16 c-2.6-3.4 -8-1.6 -8 2.2 c0 3 4.4 6.2 8 8.6 c3.6-2.4 8-5.6 8-8.6 c0-3.8 -5.4-5.6 -8-2.2 Z" fill="#1d2447"/>
+      <circle cx="10" cy="22" r="5" fill="#e2685e"/><circle cx="10" cy="38" r="5" fill="#e2685e"/><circle cx="10" cy="54" r="5" fill="#e2685e"/>
+      <circle cx="54" cy="22" r="5" fill="#e2685e"/><circle cx="54" cy="38" r="5" fill="#e2685e"/><circle cx="54" cy="54" r="5" fill="#e2685e"/>
+      <g stroke="#f7eed9" stroke-width="1.4"><line x1="22" y1="64" x2="22" y2="96"/><line x1="26" y1="64" x2="26" y2="96"/><line x1="30" y1="64" x2="30" y2="96"/><line x1="34" y1="64" x2="34" y2="96"/><line x1="38" y1="64" x2="38" y2="96"/><line x1="42" y1="64" x2="42" y2="96"/></g>
+    </svg>
+    <div class="logo-texte">
+      <h1><span class="grat">Grat&rsquo;</span><span class="tab">Tab</span></h1>
+      <span class="ruban">développé par <b>TchoPolo</b></span>
     </div>
+    <svg class="etincelles" viewBox="0 0 40 80" aria-hidden="true">
+      <g stroke-linecap="round" stroke-width="5"><line x1="8" y1="14" x2="18" y2="22" stroke="#ffc94b"/><line x1="14" y1="38" x2="26" y2="38" stroke="#ef7d72"/><line x1="8" y1="62" x2="18" y2="54" stroke="#54c98f"/></g>
+    </svg>
   </div>
   <div class="outils">
     <select id="instrument" title="Timbre de l'instrument" aria-label="Instrument">
@@ -256,7 +268,7 @@ footer{margin-top:26px;color:var(--texte2);font-size:.8rem;text-align:center}
   <div class="timeline" id="timeline"></div>
 </section>
 
-<footer>Grat’Tab — accords ouverts, barrés &amp; capo · sons générés dans le navigateur (aucune connexion requise).</footer>
+<footer>Grat’Tab — développé par TchoPolo 🧡 accords ouverts, barrés &amp; capo · sons générés dans le navigateur, aucune connexion requise.</footer>
 </div>
 <script>
 /* ================================================================
@@ -391,34 +403,34 @@ function dessine(pos){
   const cx=s=>PX+(L?(5-s):s)*cw; // s: 0=corde 6 grave … 5=chanterelle
   let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Diagramme d'accord">`;
   // sillet ou n° de case
-  if(base===1)svg+=`<rect x="${PX-3}" y="${PT-7}" width="${W-2*PX+6}" height="7" rx="2" fill="#f2e7d5"/>`;
-  else svg+=`<text x="${L?W-6:6}" y="${PT+fh*0.62}" fill="#c9924b" font-size="15" font-weight="700" text-anchor="${L?'end':'start'}">${base}</text>`;
+  if(base===1)svg+=`<rect x="${PX-3}" y="${PT-7}" width="${W-2*PX+6}" height="7" rx="2" fill="#f7eed9"/>`;
+  else svg+=`<text x="${L?W-6:6}" y="${PT+fh*0.62}" fill="#ef7d72" font-size="15" font-weight="700" text-anchor="${L?'end':'start'}">${base}</text>`;
   // frettes
-  for(let i=0;i<=NB;i++)svg+=`<line x1="${PX}" y1="${PT+i*fh}" x2="${W-PX}" y2="${PT+i*fh}" stroke="#5a3f26" stroke-width="2"/>`;
+  for(let i=0;i<=NB;i++)svg+=`<line x1="${PX}" y1="${PT+i*fh}" x2="${W-PX}" y2="${PT+i*fh}" stroke="#4a5694" stroke-width="2"/>`;
   // cordes (cliquables)
   for(let s=0;s<6;s++){
     const ep=3-s*0.35;
-    svg+=`<line class="corde" data-s="${s}" x1="${cx(s)}" y1="${PT}" x2="${cx(s)}" y2="${PT+NB*fh}" stroke="#c9924b" stroke-width="${ep}" style="cursor:pointer"/>`;
+    svg+=`<line class="corde" data-s="${s}" x1="${cx(s)}" y1="${PT}" x2="${cx(s)}" y2="${PT+NB*fh}" stroke="#ef7d72" stroke-width="${ep}" style="cursor:pointer"/>`;
   }
   // barré : doigt 1 posé sur ≥2 cordes à la même case
   const c1=pos.f.map((f,i)=>({f,d:pos.d[i],i})).filter(x=>x.d===1&&x.f>0);
   if(c1.length>=2&&c1.every(x=>x.f===c1[0].f)){
     const y=PT+(c1[0].f-base)*fh+fh/2;
     const xs=c1.map(x=>cx(x.i));
-    svg+=`<rect x="${Math.min(...xs)-11}" y="${y-11}" width="${Math.abs(xs[xs.length-1]-xs[0])+22}" height="22" rx="11" fill="#e8b563"/>`;
+    svg+=`<rect x="${Math.min(...xs)-11}" y="${y-11}" width="${Math.abs(xs[xs.length-1]-xs[0])+22}" height="22" rx="11" fill="#ffc94b"/>`;
   }
   // pastilles, croix, notes
   for(let s=0;s<6;s++){
     const f=pos.f[s],d=pos.d[s],x=cx(s);
-    if(f===-1){svg+=`<text x="${x}" y="${PT-16}" fill="#c66a52" font-size="16" font-weight="700" text-anchor="middle">✕</text>`;continue;}
-    if(f===0)svg+=`<circle cx="${x}" cy="${PT-21}" r="7" fill="none" stroke="#f2e7d5" stroke-width="2"/>`;
+    if(f===-1){svg+=`<text x="${x}" y="${PT-16}" fill="#ff6b5e" font-size="16" font-weight="700" text-anchor="middle">✕</text>`;continue;}
+    if(f===0)svg+=`<circle cx="${x}" cy="${PT-21}" r="7" fill="none" stroke="#f7eed9" stroke-width="2"/>`;
     else{
       const y=PT+(f-base)*fh+fh/2;
-      svg+=`<circle cx="${x}" cy="${y}" r="12.5" fill="#e8b563"/>`;
-      if(d)svg+=`<text x="${x}" y="${y+4.5}" fill="#241407" font-size="13" font-weight="700" text-anchor="middle">${d}</text>`;
+      svg+=`<circle cx="${x}" cy="${y}" r="12.5" fill="#ffc94b"/>`;
+      if(d)svg+=`<text x="${x}" y="${y+4.5}" fill="#1d2447" font-size="13" font-weight="700" text-anchor="middle">${d}</text>`;
     }
     const midi=MIDI_CORDES[s]+f+etat.capo;
-    svg+=`<text x="${x}" y="${H-12}" fill="#b39b7d" font-size="11.5" text-anchor="middle">${nomNote(midi)}</text>`;
+    svg+=`<text x="${x}" y="${H-12}" fill="#aab3dc" font-size="11.5" text-anchor="middle">${nomNote(midi)}</text>`;
   }
   svg+='</svg>';
   return svg;
@@ -490,20 +502,20 @@ function rendAccordeur(){
   for(let cts=-50;cts<=50;cts+=10){
     const d=(cts*0.9)*Math.PI/180, maj=(cts===0||Math.abs(cts)===50);
     const r1=maj?104:112, r2=126;
-    ticks+=`<line x1="${150+r1*Math.sin(d)}" y1="${150-r1*Math.cos(d)}" x2="${150+r2*Math.sin(d)}" y2="${150-r2*Math.cos(d)}" stroke="${cts===0?'#e8b563':'#5a3f26'}" stroke-width="${maj?3:2}"/>`;
+    ticks+=`<line x1="${150+r1*Math.sin(d)}" y1="${150-r1*Math.cos(d)}" x2="${150+r2*Math.sin(d)}" y2="${150-r2*Math.cos(d)}" stroke="${cts===0?'#ffc94b':'#4a5694'}" stroke-width="${maj?3:2}"/>`;
   }
   $('zoneAccordeur').innerHTML=`
   <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px">
     <svg viewBox="0 0 300 168" style="width:100%;max-width:340px" aria-label="Accordeur à aiguille">
-      <path id="zoneVerte" d="" fill="none" stroke="#8fae6f" stroke-width="10" opacity="0.85"/>
+      <path id="zoneVerte" d="" fill="none" stroke="#54c98f" stroke-width="10" opacity="0.85"/>
       ${ticks}
-      <text x="60" y="88" fill="#a5896a" font-size="12" text-anchor="middle">-50</text>
-      <text x="150" y="20" fill="#e8b563" font-size="12" text-anchor="middle">0</text>
-      <text x="240" y="88" fill="#a5896a" font-size="12" text-anchor="middle">+50</text>
-      <line id="aiguille" x1="150" y1="150" x2="150" y2="36" stroke="#f2e7d5" stroke-width="3.5" stroke-linecap="round"/>
-      <circle cx="150" cy="150" r="9" fill="#c9924b"/>
-      <text x="18" y="162" fill="#a5896a" font-size="11">grave ♭</text>
-      <text x="282" y="162" fill="#a5896a" font-size="11" text-anchor="end">aigu ♯</text>
+      <text x="60" y="88" fill="#aab3dc" font-size="12" text-anchor="middle">-50</text>
+      <text x="150" y="20" fill="#ffc94b" font-size="12" text-anchor="middle">0</text>
+      <text x="240" y="88" fill="#aab3dc" font-size="12" text-anchor="middle">+50</text>
+      <line id="aiguille" x1="150" y1="150" x2="150" y2="36" stroke="#f7eed9" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="150" cy="150" r="9" fill="#ef7d72"/>
+      <text x="18" y="162" fill="#aab3dc" font-size="11">grave ♭</text>
+      <text x="282" y="162" fill="#aab3dc" font-size="11" text-anchor="end">aigu ♯</text>
     </svg>
     <div class="display" id="noteJauge" style="font-size:2.1rem;font-weight:700;line-height:1">—</div>
     <div class="vide" id="centsJauge">Lance le micro, joue une corde à vide, amène l'aiguille au centre.</div>
@@ -559,12 +571,12 @@ function basculeAccordeurMicro(){
         cible=Math.max(-50,Math.min(50,cents));
         const juste=Math.abs(cents)<=5;
         nj.textContent=nomNote(((prox%12)+12)%12)+(Math.floor(prox/12)-1);
-        nj.style.color=juste?'#8fae6f':'#f2e7d5';
+        nj.style.color=juste?'#54c98f':'#f7eed9';
         let corde='',dMin=99,sMin=-1;
         MIDI_CORDES.forEach((m,s)=>{const d2=Math.abs(m-prox);if(d2<dMin){dMin=d2;sMin=s;}});
         if(dMin<=2)corde=' · corde '+['6ᵉ (Mi grave)','5ᵉ (La)','4ᵉ (Ré)','3ᵉ (Sol)','2ᵉ (Si)','1ʳᵉ (Mi aigu)'][sMin];
         cj.textContent=(cents>0?'+':'')+cents.toFixed(0)+' cents'+(juste?' — juste ✓':'')+corde;
-      }else{nj.textContent='—';nj.style.color='#f2e7d5';cj.textContent='joue une corde…';cible=0;}
+      }else{nj.textContent='—';nj.style.color='#f7eed9';cj.textContent='joue une corde…';cible=0;}
       accAiguille+=(cible-accAiguille)*0.35;
       aig.setAttribute('transform','rotate('+(accAiguille*0.9)+' 150 150)');
     },90);
